@@ -1,0 +1,15 @@
+export default [
+  { name: "GRD Rans", logo: "/logos/grdRans.png" },
+  { name: "FC Boelhe", logo: "/logos/fcBoelhe.png" },
+  { name: "GDCSS Castelões", logo: "/logos/gdcssCasteloes.png" },
+  { name: "AC Croca", logo: "/logos/acCroca.png" },
+  { name: "ACDFC Calçada", logo: "/logos/acdfcCalcada.png" },
+  { name: "Cabeça Santa", logo: "/logos/cabecaSanta.png" },
+  { name: "Rio Mau FC", logo: "/logos/rioMau.png" },
+  { name: "Paço de Sousa", logo: "/logos/pacoSousa.png" },
+  { name: "ADCR Eja", logo: "/logos/adcREja.png" },
+  { name: "ADC Lodares", logo: "/logos/adcLodares.png" },
+  { name: "UD Abragonense", logo: "/logos/udAbragonense.png" },
+  { name: "Desp. Canelas", logo: "/logos/despCanelas.png" },
+  { name: "SC Lagares", logo: "/logos/scLagares.png" },
+];
