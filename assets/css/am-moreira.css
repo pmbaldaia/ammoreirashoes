@@ -58,3 +58,6 @@ html.dark .am-form textarea{background:var(--ui-surface);color:var(--ui-text);bo
   .am-hero{min-height:78svh;padding-top:128px}
   .am-footer__grid{grid-template-columns:1fr;gap:var(--space-4)}
 }
+
+/* O texto do hero segue a mesma margem esquerda da grelha das secções. */
+.am-hero .am-hero__content{margin-inline:0;text-align:left}

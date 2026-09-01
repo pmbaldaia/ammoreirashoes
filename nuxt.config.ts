@@ -258,7 +258,7 @@ export default defineNuxtConfig({
     },
   },
 
-  css: ["~/assets/css/tokens.css", "~/assets/css/main.css", "~/assets/css/am-moreira.css"],
+  css: ["~/assets/css/tokens.css", "~/assets/css/main.css", "~/assets/css/am-moreira.css", "~/assets/css/ui-polish.css"],
 
   devtools: { enabled: true },
 

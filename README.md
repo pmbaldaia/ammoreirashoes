@@ -7,10 +7,23 @@ Projeto Nuxt full-stack, mobile-first, com website público, CMS responsivo em `
 ```bash
 npm install
 npm run mongo:setup
+npm run mongo:sync
+
+## Instalação local
+
+O projeto fixa o Nuxt em `3.19.3` para evitar a regressão do alias interno `#app-manifest` presente nas versões 3.20+.
+
+```bash
+npm run clean
+npm ci
 npm run dev
 ```
 
-O ficheiro `.env` já aponta para a base exclusiva `ammoreira`. O backend executa um bootstrap idempotente na primeira ligação: se a base ainda não existir, cria as coleções, índices, dados iniciais e o administrador. `npm run mongo:setup` permite executar antecipadamente o mesmo processo.
+Se o teu gestor bloquear scripts de instalação, aprova apenas `esbuild` e `sharp` antes de iniciar o projeto. `fsevents` é opcional no macOS.
+npm run dev
+```
+
+O ficheiro `.env` aponta para a base exclusiva `ammoreira`. O backend executa um bootstrap idempotente na primeira ligação: se a base ainda não existir, cria as coleções, índices, dados iniciais e o administrador. `npm run mongo:setup` permite executar antecipadamente o mesmo processo. Para aplicar ao MongoDB atual as alterações aos conteúdos de exemplo incluídos no projeto, usa `npm run mongo:sync`; este comando atualiza apenas os registos institucionais com os IDs do projeto e não elimina os restantes registos criados no CMS.
 
 O MongoDB só materializa a base quando é criado o primeiro documento; por isso a criação é feita através dos dados e configurações iniciais da AM Moreira.
 
@@ -30,7 +43,7 @@ O website público não lê conteúdo institucional de ficheiros locais. Navega�
 ## Perfis
 
 - `admin`: acesso total, utilizadores e eliminação.
-- `editor`: criação e edição editorial.
+- `viewer`: criação e edição de conteúdos.
 - `commercial`: contactos e acompanhamento comercial.
 
 Todas as permissões são verificadas na API. A interface não é a fonte de autorização.

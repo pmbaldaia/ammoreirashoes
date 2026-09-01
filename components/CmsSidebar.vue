@@ -3,6 +3,7 @@ defineProps<{ open?: boolean }>();
 defineEmits<{ close: [] }>();
 const route = useRoute();
 const { groups } = useCmsNavigation();
+const { isDark } = useThemeMode();
 </script>
 <template>
   <button
@@ -15,10 +16,10 @@ const { groups } = useCmsNavigation();
   <aside class="cms-sidebar" :class="{ 'cms-sidebar--open': open }">
     <NuxtLink to="/admin" class="brand" @click="$emit('close')"
       ><img
-        src="/brand/logo-branco.png"
+        :src="isDark ? '/brand/logo-branco.png' : '/brand/logo-preto.png'"
         alt="AM Moreira"
         class="brand-logo-original brand__logo"
-      /><span class="brand__name">AM MOREIRA</span></NuxtLink
+      /></NuxtLink
     >
     <nav class="sidebar-nav" aria-label="Navegação principal">
       <section v-for="group in groups" :key="group.label" class="nav-group">

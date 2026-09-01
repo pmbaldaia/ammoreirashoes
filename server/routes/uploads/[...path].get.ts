@@ -4,7 +4,7 @@ import { getMongoDb, getGridFsBucket } from '../../backend/core/mongo.mjs'
 export default defineEventHandler(async (event) => {
   const id = decodeURIComponent(getRouterParam(event, 'path') || '')
   if (!ObjectId.isValid(id)) {
-    throw createError({ statusCode: 404, statusMessage: 'Ficheiro não encontrado' })
+    throw createError({ statusCode: 404, message: 'Ficheiro não encontrado' })
   }
 
   const objectId = new ObjectId(id)
@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
   const file = await db.collection('media.files').findOne({ _id: objectId })
 
   if (!file) {
-    throw createError({ statusCode: 404, statusMessage: 'Ficheiro não encontrado' })
+    throw createError({ statusCode: 404, message: 'Ficheiro não encontrado' })
   }
 
   setHeader(event, 'Content-Type', file.metadata?.mime || 'application/octet-stream')

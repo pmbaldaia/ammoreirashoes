@@ -46,9 +46,9 @@ const toast=useToast()
 const confirmDialog=useConfirm()
 const { user }=useAuth()
 const isAdmin=computed(()=>user.value?.role==='admin')
-const isEditor=computed(()=>user.value?.role==='editor')
+const isViewer=computed(()=>user.value?.role==='viewer')
 const canCreate=computed(()=>props.allowCreate && isAdmin.value)
-const canEdit=computed(()=>props.allowEdit && (isAdmin.value || isEditor.value))
+const canEdit=computed(()=>props.allowEdit && (isAdmin.value || isViewer.value))
 const canDelete=computed(()=>props.allowDelete && isAdmin.value)
 const query=ref('')
 const page=ref(1)
@@ -137,7 +137,7 @@ watch(totalPages,(total)=>{ if(page.value>total) page.value=total })
 async function load(){
   pending.value=true; error.value=''
   try{ items.value=await props.service.list() }
-  catch(e:any){ const message=e?.data?.message||e?.statusMessage||e?.message||'Erro ao carregar os dados.'; error.value=message; toast.error('Não foi possível carregar', message) }
+  catch(e:any){ const message=e?.data?.message||e?.message||'Erro ao carregar os dados.'; error.value=message; toast.error('Não foi possível carregar', message) }
   finally{ pending.value=false }
 }
 function empty(){
@@ -210,7 +210,7 @@ async function submit(){
       wasEditing ? 'O registo foi atualizado com sucesso.' : 'O novo registo foi criado com sucesso.'
     )
   }catch(e:any){
-    const message=e?.data?.message||e?.statusMessage||e?.message||'Não foi possível guardar as alterações.'
+    const message=e?.data?.message||e?.message||'Não foi possível guardar as alterações.'
     error.value=message
     toast.error('Erro ao guardar', message)
   }finally{ saving.value=false }
@@ -235,7 +235,7 @@ async function del(item:any){
     toast.success('Registo eliminado', 'O registo foi removido com sucesso.')
   }
   catch(e:any){
-    const message=e?.data?.message||e?.statusMessage||e?.message||'Não foi possível eliminar o registo.'
+    const message=e?.data?.message||e?.message||'Não foi possível eliminar o registo.'
     error.value=message
     toast.error('Erro ao eliminar', message)
   }
@@ -252,7 +252,7 @@ async function togglePublish(item:any){
     else if(item.publishedAt && new Date(item.publishedAt).getTime()>Date.now()) toast.success('Publicação agendada', `O conteúdo será publicado em ${formatDateTime(item.publishedAt)}.`)
     else toast.success('Conteúdo publicado', 'O conteúdo já está disponível no site público.')
   }catch(e:any){
-    const message=e?.data?.message||e?.statusMessage||e?.message||'Não foi possível alterar o estado de publicação.'
+    const message=e?.data?.message||e?.message||'Não foi possível alterar o estado de publicação.'
     error.value=message
     toast.error('Erro ao alterar publicação', message)
   }

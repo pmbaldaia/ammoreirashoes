@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const { isDark } = useThemeMode()
 definePageMeta({ layout: "admin-auth" });
-const email = ref("");
+const username = ref("");
 const password = ref("");
 const pending = ref(false);
 const error = ref("");
@@ -31,7 +31,7 @@ async function submit() {
   error.value = "";
   pending.value = true;
   try {
-    await login(email.value, password.value);
+    await login(username.value, password.value);
     toast.success('Sessão iniciada', 'Bem-vindo à gestão da AM Moreira.');
     await navigateTo("/admin");
   } catch (e: any) {
@@ -51,11 +51,11 @@ async function submit() {
     <p>Inicia sessão para gerir os conteúdos do site.</p>
     <form @submit.prevent="submit" class="auth-form">
       <label class="form-field"
-        ><span>Email</span
+        ><span>Utilizador</span
         ><input
-          v-model.trim="email"
-          type="email"
-          autocomplete="email"
+          v-model.trim="username"
+          type="text"
+          autocomplete="username"
           required /></label
       ><label class="form-field"
         ><span>Palavra-passe</span
@@ -70,6 +70,7 @@ async function submit() {
       <button class="btn btn--primary" :disabled="pending">
         {{ pending ? "A entrar…" : "Entrar" }}
       </button>
+      <NuxtLink class="auth-recovery-link" to="/admin/recuperar-password">Esqueceste-te da palavra-passe?</NuxtLink>
     </form>
   </section>
 </template>

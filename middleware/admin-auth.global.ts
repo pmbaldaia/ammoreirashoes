@@ -1,7 +1,7 @@
 export default defineNuxtRouteMiddleware(async (to) => {
   if (!to.path.startsWith('/admin')) return
   const { token, me } = useAuth()
-  if (to.path === '/admin/login') {
+  if (['/admin/login', '/admin/recuperar-password', '/admin/redefinir-password'].includes(to.path)) {
     if (token.value) { try { await me(); return navigateTo('/admin') } catch { token.value = null } }
     return
   }

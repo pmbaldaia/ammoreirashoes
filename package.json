@@ -5,10 +5,12 @@
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
+    "clean": "nuxt cleanup",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "mongo:setup": "node --env-file=.env scripts/setup-am-moreira-mongodb.mjs",
+    "mongo:sync": "node --env-file=.env scripts/sync-am-moreira-mongodb.mjs",
     "a11y:tokens": "node scripts/check-accessibility-tokens.mjs"
   },
   "devDependencies": {
@@ -16,7 +18,7 @@
     "@nuxtjs/sitemap": "^7.4.3",
     "@tailwindcss/typography": "^0.5.10",
     "autoprefixer": "^10.4.16",
-    "nuxt": "^3.16.0",
+    "nuxt": "3.19.3",
     "nuxt-icon": "^0.6.8",
     "postcss": "^8.4.32",
     "tailwindcss": "^3.4.0",
@@ -30,9 +32,9 @@
     "lucide-vue-next": "^0.510.0",
     "pinia": "^3.0.2",
     "mongodb": "^6.19.0",
-    "sharp": "0.32.6"
+    "sharp": "0.35.4"
   },
   "overrides": {
-    "sharp": "0.32.6"
+    "sharp": "0.35.4"
   }
 }

@@ -7,7 +7,7 @@ const { user, logout } = useAuth()
 const toast = useToast()
 
 const roleLabel = computed(() =>
-  ({ admin: 'Administrador', editor: 'Editor', commercial: 'Comercial' } as Record<string,string>)[user.value?.role || ''] || 'Utilizador'
+  ({ admin: 'Administrador', viewer: 'Viewer', commercial: 'Comercial' } as Record<string,string>)[user.value?.role || ''] || 'Utilizador'
 )
 
 const pageMeta = computed(() => {
@@ -95,7 +95,8 @@ function openSite() {
 
       <button class="user-menu" type="button" @click="menuOpen = !menuOpen">
         <span class="user-menu__avatar">
-          {{ (user?.name || 'AD').slice(0, 2).toUpperCase() }}
+          <img v-if="user?.avatar" :src="user.avatar" alt="">
+          <template v-else>{{ (user?.name || 'AD').slice(0, 2).toUpperCase() }}</template>
         </span>
         <span class="user-menu__copy">
           <strong>{{ user?.name || 'Administrador' }}</strong>
@@ -105,6 +106,10 @@ function openSite() {
       </button>
 
       <div v-if="menuOpen" class="user-dropdown">
+        <NuxtLink to="/admin/perfil" @click="menuOpen = false">
+          <Icon name="lucide:user-round" />
+          O meu perfil
+        </NuxtLink>
         <NuxtLink to="/admin/contactos" class="mobile-menu-link" @click="menuOpen = false">
           <Icon name="lucide:mail" />
           Contactos

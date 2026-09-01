@@ -5,7 +5,7 @@ async function collectionFor(resource) {
   const db = await getMongoDb()
   const collection = db.collection(resource)
   await collection.createIndex({ id: 1 }, { unique: true, sparse: true })
-  if (resource === 'users') await collection.createIndex({ email: 1 }, { unique: true, sparse: true })
+  if (resource === 'users') { await collection.createIndex({ email: 1 }, { unique: true, sparse: true }); await collection.createIndex({ username: 1 }, { unique: true, sparse: true }) }
   return collection
 }
 

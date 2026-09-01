@@ -2,10 +2,10 @@
 withDefaults(defineProps<{
   label: string
   value: string | number
-  detail: string
+  detail?: string
   icon: string
   tone?: 'primary' | 'success' | 'warning' | 'info'
-}>(), { tone: 'primary' })
+}>(), { tone: 'primary', detail: '' })
 </script>
 
 <template>
@@ -15,6 +15,6 @@ withDefaults(defineProps<{
       <span class="stat-card__icon"><Icon :name="icon" size="18" /></span>
     </div>
     <strong class="stat-card__value">{{ value }}</strong>
-    <p class="stat-card__detail">{{ detail }}</p>
+    <p v-if="detail" class="stat-card__detail">{{ detail }}</p>
   </article>
 </template>

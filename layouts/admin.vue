@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import '~/assets/css/admin.css'
 import '~/assets/css/admin-am-shoes.css'
+import '~/assets/css/ui-polish.css'
 useHead({ titleTemplate: (title) => title ? `${title} · AM Moreira CMS` : 'AM Moreira CMS' })
 const sidebarOpen = ref(false)
 </script>
