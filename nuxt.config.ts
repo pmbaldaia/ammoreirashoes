@@ -58,6 +58,17 @@ const siteUrl = process.env.NUXT_SITE_URL || "http://localhost:3000";
 export default defineNuxtConfig({
   compatibilityDate: "2026-05-23",
 
+  // The domain root is always the public website home. Keep it server-rendered
+  // and uncached so CMS changes are visible immediately at `/`.
+  routeRules: {
+    '/': {
+      ssr: true,
+      headers: {
+        'cache-control': 'no-store, max-age=0',
+      },
+    },
+  },
+
   nitro: {
     preset: "netlify",
   },

@@ -1,1 +1,5 @@
-<script setup lang="ts">const {data:groups}=await useFetch('/api/public/gallery',{default:()=>[]});const images=computed(()=>groups.value.flatMap((group:any)=>(group.images||[]).map((src:string)=>({src,alt:group.title}))))</script><template><div class="am-site"><CmsManagedHeader page-slug="galeria"/><section class="am-section"><div class="am-wrap"><div v-if="images.length" class="am-grid"><div v-for="(image,i) in images" :key="i" class="am-card__image"><img :src="image.src" :alt="image.alt" loading="lazy"></div></div></div></section></div></template>
+<script setup lang="ts">
+await usePublicPage('galeria')
+const { data: groups } = await useFetch('/api/public/gallery', { default: () => [], cache: 'no-cache' })
+const images = computed(() => groups.value.flatMap((group:any) => (group.images||[]).map((src:string) => ({src,alt:group.title}))))
+</script><template><div class="am-site"><CmsManagedHeader page-slug="galeria"/><section class="am-section"><div class="am-wrap"><div v-if="images.length" class="am-grid"><div v-for="(image,i) in images" :key="i" class="am-card__image"><img :src="image.src" :alt="image.alt" loading="lazy"></div></div></div></section></div></template>

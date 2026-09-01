@@ -5,6 +5,8 @@ const [{ data: pages }, { data: blocks }, { data: products }, { data: events }] 
   useFetch('/api/public/products', { default: () => [] }), useFetch('/api/public/events', { default: () => [] }),
 ])
 const page = computed(() => pages.value.find((item: any) => item.slug === props.pageSlug))
+// An orphaned content block must not keep a deleted/unpublished page available.
+if (!page.value) throw createError({ statusCode: 404, message: 'Página não encontrada' })
 const visibleBlocks = computed(() => blocks.value.filter((item: any) => item.pageSlug === props.pageSlug && item.status === 'published').sort((a: any, b: any) => (a.order || 0) - (b.order || 0)))
 const featuredProducts = computed(() => products.value.filter((item: any) => item.featured).slice(0, 3).length ? products.value.filter((item: any) => item.featured).slice(0, 3) : products.value.slice(0, 3))
 const featuredEvents = computed(() => events.value.filter((item: any) => item.featured).slice(0, 3).length ? events.value.filter((item: any) => item.featured).slice(0, 3) : events.value.slice(0, 3))

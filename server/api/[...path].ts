@@ -60,7 +60,14 @@ export default defineEventHandler(async(event)=>{
     if(method==='DELETE'&&id){await usersService.remove(id);await audit(user,'delete','users',id);setResponseStatus(event,204);return null}
   }
   const service=amServices[resource];if(!service||(isPublic&&!publicResources.has(resource)))fail(404,'Recurso não encontrado')
-  if(isPublic){if(method!=='GET')fail(405,'Método não permitido');if(id){const row=await service.get(id);if(!row)fail(404,'Registo não encontrado');return row}return service.listPublic()}
+  if(isPublic){
+    if(method!=='GET')fail(405,'Método não permitido')
+    // Never cache public CMS reads: changes in MongoDB take effect on the
+    // very next website request, including unpublishing and deletion.
+    setHeader(event,'cache-control','no-store, max-age=0')
+    if(id){const row=await service.getPublic(id);if(!row)fail(404,'Registo não encontrado');return row}
+    return service.listPublic()
+  }
   const user=requireAuth(event);if(method==='GET'&&!id)return service.list();if(method==='GET'&&id)return service.get(id)
   if(!canEdit(user,resource))fail(403,'Sem permissão para gerir este conteúdo')
   if(method==='POST'){const row=await service.create(await readBody(event));await audit(user,'create',resource,row.id);setResponseStatus(event,201);return row}

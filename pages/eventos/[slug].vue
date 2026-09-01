@@ -1,8 +1,10 @@
 <script setup lang="ts">
 definePageMeta({ layout: 'default' })
+await usePublicPage('eventos')
 const route = useRoute()
 const { data: events } = await useFetch('/api/public/events', { default: () => [] })
 const event = computed(() => events.value.find((item:any) => item.slug === route.params.slug))
+if (!event.value) throw createError({ statusCode: 404, message: 'Evento não encontrado' })
 useHead(() => ({
   title: event.value ? `${event.value.name} — AM Moreira` : 'Evento — AM Moreira',
   meta: [{ name:'description', content:event.value?.description || 'Feiras e eventos AM Moreira.' }],
