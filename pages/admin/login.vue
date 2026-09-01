@@ -47,7 +47,6 @@ async function submit() {
   <section class="auth-card">
     <img :src="isDark ? '/brand/logo-branco.png' : '/brand/logo-preto.png'" alt="AM Moreira" class="brand-logo-original auth-logo" />
     <p class="eyebrow">Área reservada</p>
-    <h1>AM Moreira</h1>
     <p>Inicia sessão para gerir os conteúdos do site.</p>
     <form @submit.prevent="submit" class="auth-form">
       <label class="form-field"
