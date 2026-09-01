@@ -20,7 +20,6 @@ useHead(() => ({ title: page.value?.seoTitle || page.value?.title || 'AM Moreira
       <section v-if="block.type === 'hero'" class="am-hero" :style="block.image ? { backgroundImage: `linear-gradient(90deg,rgba(15,13,11,.88),rgba(15,13,11,.18)),url('${block.image}')` } : {}">
         <div class="am-wrap am-hero__layout">
           <div class="am-hero__content"><p class="am-kicker">{{ block.eyebrow }}</p><h1>{{ block.title }}</h1><p>{{ block.content }}</p><div v-if="block.items?.length" class="am-actions"><NuxtLink v-for="(raw, index) in block.items" :key="raw" :class="['am-btn', { 'am-btn--light': index > 0 }]" :to="action(raw).url">{{ action(raw).label }}</NuxtLink></div></div>
-          <div v-if="block.image" class="am-hero__visual" aria-hidden="true"><img :src="block.image" alt="" fetchpriority="high"></div>
         </div>
       </section>
       <PublicPageHeader v-else-if="block.type === 'page-header'" :kicker="block.eyebrow || ''" :title="block.title || ''" :description="block.content || ''" />

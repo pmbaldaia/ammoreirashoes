@@ -454,7 +454,7 @@ html.dark .resource-filter {
 }
 .am-hero__layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.08fr) minmax(260px, 0.72fr);
+  grid-template-columns: minmax(0, 1fr);
   align-items: end;
   gap: clamp(28px, 6vw, 88px);
   min-height: clamp(470px, 67svh, 680px);
@@ -488,6 +488,55 @@ html.dark .am-hero__visual {
   border-color: rgb(255 255 255 / 0.2);
   background: rgb(24 24 27 / 0.48);
   box-shadow: 0 26px 56px rgb(0 0 0 / 0.5);
+}
+
+/* Public navigation controls */
+.am-nav__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.am-nav .theme-toggle {
+  min-width: 44px;
+  min-height: 44px;
+  border: 1px solid var(--color-line);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-black);
+}
+.am-nav .theme-toggle:hover { background: var(--color-bg-soft); }
+.am-mobile-panel .theme-toggle {
+  justify-content: flex-start;
+  min-height: 48px;
+  padding: 12px;
+}
+html.dark .am-nav .theme-toggle {
+  border-color: var(--ui-divider);
+  color: var(--ui-text);
+}
+html.dark .am-nav .theme-toggle:hover { background: var(--ui-surface-soft); }
+
+/* Social icons shown only for networks configured in CMS > Empresa e SEO. */
+.am-social-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+.am-social-links a {
+  display: inline-grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid rgb(255 255 255 / 0.35);
+  border-radius: 50%;
+  color: #fff;
+  transition: background-color .2s ease, color .2s ease, border-color .2s ease;
+}
+.am-social-links a:hover {
+  background: var(--color-accent-light);
+  border-color: var(--color-accent-light);
+  color: var(--color-black);
 }
 
 /* The sidebar workspace control is the shared Dark Mode control reference. */
