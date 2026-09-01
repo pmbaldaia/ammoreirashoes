@@ -1,0 +1,2 @@
+export interface MediaItem{id:string;name:string;url:string;size:number;updatedAt?:string}
+export const mediaService=()=>{const api=useApi();return {list:()=>api<MediaItem[]>('/api/media'),async upload(file:File){const data=await new Promise<string>((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result));r.onerror=()=>reject(r.error);r.readAsDataURL(file)});return api<MediaItem>('/api/media',{method:'POST',body:{filename:file.name,mime:file.type,data}})},remove:(id:string)=>api<void>(`/api/media/${encodeURIComponent(id)}`,{method:'DELETE'})}}

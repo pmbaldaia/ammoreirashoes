@@ -1,0 +1,1 @@
+<script setup lang="ts">defineProps<{kicker:string,title:string,description:string}>()</script><template><header class="am-page-header am-section am-section--sand"><div class="am-wrap"><p class="am-kicker">{{kicker}}</p><h1>{{title}}</h1><p class="am-page-header__description">{{description}}</p></div></header></template>

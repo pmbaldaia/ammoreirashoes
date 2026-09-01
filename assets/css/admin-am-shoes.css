@@ -1,0 +1,208 @@
+/* AM Moreira — camada final do Design System do CMS */
+:root {
+  --sidebar-w: 264px;
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 4px;
+  --color-ink-faint: #66666f;
+}
+
+.cms-shell, .auth-shell, .cms-modal, .cms-toast { font-family: var(--font-body) !important; }
+.cms-shell, .auth-shell, .cms-content { background: var(--ui-page) !important; color: var(--ui-text) !important; }
+.page-heading h1, .panel h2, .auth-card h1, .cms-modal h2, .empty-state h3 {
+  color: var(--ui-text) !important; font-family: var(--font-display) !important;
+  font-weight: 600 !important; letter-spacing: .035em !important;
+}
+.eyebrow, .nav-group__title {
+  color: var(--color-accent) !important; font: 600 11px/1.4 var(--font-body) !important;
+  letter-spacing: .18em !important; text-transform: uppercase;
+}
+.page-heading__description, .panel__header p, .stat-card__label, .stat-card__detail,
+.form-field__hint, .cms-pagination__summary, .media-card small,
+.topbar-context__copy small, .empty-state, .cms-loading { color: var(--ui-text-muted) !important; }
+
+/* Sidebar: clara no tema claro e preta no tema escuro. */
+.cms-sidebar {
+  width: var(--sidebar-w) !important; padding: 24px 16px 16px !important;
+  background: var(--ui-surface) !important; border-right: 1px solid var(--ui-divider) !important;
+  box-shadow: none !important;
+}
+.cms-sidebar .brand { flex: 0 0 auto; min-width: 0; color: var(--ui-text) !important; }
+.cms-sidebar .brand__logo { flex: 0 0 34px; filter: invert(1); }
+.cms-sidebar .brand__name {
+  display: block; min-width: 0; overflow: hidden; color: var(--ui-text) !important;
+  text-overflow: ellipsis; white-space: nowrap;
+}
+.sidebar-nav, .nav-group { min-width: 0; }
+.nav-group { margin-bottom: 24px; }
+.cms-sidebar .nav-group__title { display: block; color: var(--color-accent) !important; }
+.cms-sidebar .nav-item {
+  width: 100%; min-width: 0; display: flex; align-items: center; justify-content: flex-start;
+  gap: 10px; padding: 10px 12px; overflow: hidden; color: var(--ui-text-muted) !important;
+  border-radius: var(--radius-md) !important;
+}
+.cms-sidebar .nav-item > svg, .cms-sidebar .nav-item > .icon { flex: 0 0 18px; }
+.cms-sidebar .nav-item__label {
+  min-width: 0; display: block; overflow: hidden; color: inherit !important;
+  text-overflow: ellipsis; white-space: nowrap;
+}
+.cms-sidebar .nav-item:hover { background: var(--ui-surface-soft) !important; color: var(--ui-text) !important; }
+.cms-sidebar .nav-item--active, .cms-sidebar .nav-item--active:hover {
+  background: var(--color-accent) !important; color: #fff !important; box-shadow: none !important;
+}
+.sidebar-footer { border-top-color: var(--ui-divider) !important; }
+.cms-sidebar .workspace-pill {
+  display: flex; justify-content: flex-start; min-width: 0; padding: 10px !important;
+  background: var(--ui-surface-soft) !important; color: var(--ui-text) !important;
+  border: 1px solid var(--ui-divider) !important;
+}
+.workspace-pill__avatar, .user-menu__avatar { background: var(--color-accent) !important; color: #fff !important; }
+.workspace-pill__copy { min-width: 0; display: flex; }
+.workspace-pill__copy strong { color: var(--ui-text) !important; }
+.workspace-pill__copy span { color: var(--ui-text-muted) !important; }
+
+/* Topbar e superfícies */
+.cms-shell__main { padding-left: var(--sidebar-w) !important; background: var(--ui-page) !important; }
+.cms-topbar {
+  background: color-mix(in srgb, var(--ui-surface) 94%, transparent) !important;
+  color: var(--ui-text) !important; border-bottom: 1px solid var(--ui-divider) !important;
+}
+.topbar-context__icon, .stat-card__icon, .quick-action > span {
+  background: var(--ui-surface-soft) !important; color: var(--color-accent) !important;
+  border-radius: var(--radius-md) !important;
+}
+.topbar-context__copy strong, .user-menu__copy strong { color: var(--ui-text) !important; }
+.panel, .stat-card, .auth-card, .cms-modal, .cms-confirm-dialog, .cms-toast,
+.quick-action, .workspace-pill, .user-dropdown, .media-card, .image-preview-card,
+.gallery-library-item {
+  background: var(--ui-surface) !important; color: var(--ui-text) !important;
+  border-color: var(--ui-divider) !important; border-radius: var(--radius-md) !important;
+  box-shadow: var(--shadow-card) !important;
+}
+.panel, .content-panel, .resource-tools, .resource-search, .form-field,
+.data-table, .table-scroll { min-width: 0; }
+.panel, .content-panel { overflow: hidden; }
+
+/* Controlos */
+.btn {
+  min-height: 44px !important; padding: 11px 22px !important;
+  border-radius: var(--radius-md) !important; font: 600 14px/1 var(--font-body) !important;
+}
+.btn--primary, .auth-card .btn--primary {
+  background: #000 !important; border-color: #000 !important; color: #fff !important; box-shadow: none !important;
+}
+.btn--primary:hover:not(:disabled), .auth-card .btn--primary:hover:not(:disabled) {
+  background: var(--color-accent-dark) !important; border-color: var(--color-accent-dark) !important;
+}
+.btn--secondary, .topbar-site-button, .theme-toggle, .cms-topbar .icon-button, .icon-button {
+  background: var(--ui-surface) !important; color: var(--ui-text) !important;
+  border-color: var(--ui-control-border) !important; border-radius: var(--radius-md) !important;
+}
+.btn--secondary:hover:not(:disabled), .topbar-site-button:hover, .theme-toggle:hover, .icon-button:hover {
+  background: var(--ui-surface-soft) !important; color: var(--color-accent) !important;
+  border-color: var(--color-accent) !important;
+}
+.icon-button.danger, .danger { color: var(--ui-danger-text) !important; }
+.icon-button.danger:hover { background: var(--ui-danger-soft) !important; border-color: var(--ui-danger-text) !important; }
+.form-field input, .form-field select, .form-field textarea, .cms-modal input,
+.cms-modal select, .cms-modal textarea, .resource-search, .resource-filter, .filter-button {
+  max-width: 100%; background: var(--ui-surface) !important; color: var(--ui-text) !important;
+  border-color: var(--ui-control-border) !important; border-radius: var(--radius-md) !important;
+  font-family: var(--font-body) !important;
+}
+input::placeholder, textarea::placeholder { color: var(--ui-text-muted) !important; opacity: 1; }
+:where(.cms-shell,.auth-shell) :where(a,button,input,textarea,select):focus-visible {
+  outline: 2px solid var(--ui-focus) !important; outline-offset: 2px !important;
+  box-shadow: 0 0 0 4px var(--ui-focus-soft) !important;
+}
+
+/* Tabelas */
+.table-scroll { width: 100%; overflow-x: auto; }
+.data-table { width: 100%; background: var(--ui-surface) !important; }
+.data-table thead, .data-table thead tr, .data-table thead th {
+  background: #000 !important; color: #fff !important; border-color: #29292e !important;
+}
+.data-table tbody tr, .data-table tbody td, .resource-data-table td:last-child {
+  background: var(--ui-surface) !important; color: var(--ui-text-muted) !important;
+  border-color: var(--ui-divider) !important;
+}
+.data-table tbody td:first-child, .data-table tbody td strong { color: var(--ui-text) !important; }
+.data-table tbody tr:hover td, .resource-data-table tbody tr:hover td,
+.resource-data-table tbody tr:hover td:last-child { background: var(--ui-surface-soft) !important; }
+.cms-badge, .status-badge { border-radius: var(--radius-sm) !important; }
+.cms-badge--green, .cms-badge--primary, .status-badge--success {
+  background: var(--ui-primary-soft) !important; color: var(--ui-primary-text) !important;
+  border: 1px solid var(--color-accent) !important;
+}
+
+/* Modais, galeria e login */
+.modal-backdrop, .cms-modal-backdrop, .gallery-library-backdrop { background: var(--ui-overlay) !important; }
+.cms-modal { width: min(760px, calc(100vw - 32px)); }
+.gallery-library-modal { width: min(920px, calc(100vw - 32px)); }
+.media-card img, .table-image-preview, .image-preview-card .image-preview,
+.gallery-picker__empty, .gallery-library-item img { background: var(--ui-surface-soft) !important; }
+.auth-shell { background: var(--ui-page) !important; }
+.auth-card { border-top: 3px solid var(--color-accent) !important; }
+
+/* Tema escuro: exclusivamente preto, carvão, branco e vinho. */
+html.dark .cms-sidebar { background: #000 !important; border-right-color: #34343c !important; }
+html.dark .cms-sidebar .brand__logo { filter: none; }
+html.dark .cms-sidebar .brand__name,
+html.dark .cms-sidebar .nav-item:hover,
+html.dark .cms-sidebar .workspace-pill__copy strong { color: #fff !important; }
+html.dark .cms-sidebar .nav-group__title { color: var(--color-accent-light) !important; }
+html.dark .cms-sidebar .nav-item { color: #c7c7cf !important; }
+html.dark .cms-sidebar .nav-item:hover { background: #18181b !important; }
+html.dark .cms-sidebar .nav-item--active,
+html.dark .cms-sidebar .nav-item--active:hover {
+  background: var(--color-accent) !important; color: #fff !important;
+  box-shadow: inset 3px 0 0 var(--color-accent-light) !important;
+}
+html.dark .cms-sidebar .workspace-pill { background: #111113 !important; border-color: #34343c !important; }
+html.dark .btn--primary, html.dark .auth-card .btn--primary {
+  background: var(--color-accent) !important; border-color: var(--color-accent) !important;
+}
+html.dark .btn--primary:hover:not(:disabled), html.dark .auth-card .btn--primary:hover:not(:disabled) {
+  background: var(--color-accent-light) !important; border-color: var(--color-accent-light) !important; color: #000 !important;
+}
+html.dark .data-table thead, html.dark .data-table thead tr, html.dark .data-table thead th {
+  background: var(--color-accent-dark) !important; color: #fff !important;
+}
+
+/* Sem estado intermédio comprimido: tablet e mobile usam drawer. */
+@media (max-width: 900px) {
+  :root { --sidebar-w: 0px; }
+  .cms-shell__main { padding-left: 0 !important; }
+  .cms-sidebar {
+    width: min(86vw, 320px) !important; transform: translateX(-104%);
+    transition: transform .2s ease; box-shadow: 14px 0 36px rgb(0 0 0 / .18) !important;
+  }
+  .cms-sidebar--open { transform: translateX(0); }
+  .sidebar-backdrop {
+    position: fixed; inset: 0; z-index: 45; display: block; border: 0;
+    background: var(--ui-overlay);
+  }
+  .mobile-menu { display: grid !important; }
+  .cms-sidebar .brand__name, .cms-sidebar .nav-group__title,
+  .cms-sidebar .nav-item__label, .cms-sidebar .workspace-pill__copy { display: flex; }
+}
+
+@media (max-width: 620px) {
+  .cms-content { padding: 24px 12px !important; }
+  .page-heading, .content-panel__header, .panel__header { min-width: 0; }
+  .page-heading__actions, .page-heading__actions .btn, .resource-tools, .resource-search { width: 100%; }
+  .resource-tools { display: grid; grid-template-columns: 1fr; }
+  .resource-data-table tbody { background: var(--ui-page) !important; }
+  .resource-data-table tr { background: var(--ui-surface) !important; border-color: var(--ui-divider) !important; }
+  .resource-data-table td, .resource-data-table td:nth-child(2), .resource-data-table td:nth-child(3),
+  .resource-data-table td:nth-child(4), .resource-data-table td:nth-child(5), .resource-data-table td:last-child {
+    background: transparent !important; color: var(--ui-text) !important;
+  }
+  .resource-data-table td:last-child {
+    position: static !important; width: auto !important; transform: none !important;
+    background: var(--ui-surface-soft) !important;
+  }
+  .cms-modal, .gallery-library-modal {
+    width: calc(100vw - 20px); max-height: calc(100dvh - 20px);
+  }
+}

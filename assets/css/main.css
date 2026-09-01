@@ -3,6 +3,11 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    @apply scroll-smooth antialiased;
+    font-size: 100%;
+  }
+
   html,
   body {
     margin: 0;
@@ -10,8 +15,1178 @@
     height: 100%;
     overflow-x: hidden;
   }
+
+  body {
+    @apply bg-neutral-50 text-neutral-900 font-sans text-fluid-base;
+  }
+
   #__nuxt,
   #__layout {
     min-height: 100%;
   }
+}
+
+@layer components {
+  .btn-club {
+    @apply inline-flex items-center justify-center rounded-lg px-5 py-2.5 text-fluid-sm font-semibold shadow-sm transition-all duration-200 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2;
+  }
+
+  .btn-club-green {
+    @apply btn-club bg-primary-800 text-white border border-primary-800 hover:bg-primary-950 focus-visible:ring-primary-700;
+  }
+
+  .btn-club-red {
+    @apply btn-club bg-secondary-800 text-white border border-secondary-800 hover:bg-secondary-900 focus-visible:ring-primary-700;
+  }
+
+  .card-surface {
+    @apply bg-surface border border-neutral-200 shadow-card;
+    border-radius: var(--radius-card);
+  }
+
+  .prose-fluid {
+    @apply prose max-w-none text-fluid-base;
+    --tw-prose-body: var(--color-neutral-600);
+    --tw-prose-headings: var(--color-neutral-900);
+    --tw-prose-lead: var(--color-neutral-600);
+    --tw-prose-links: var(--color-primary-800);
+    --tw-prose-bold: var(--color-neutral-900);
+    --tw-prose-counters: var(--color-neutral-600);
+    --tw-prose-bullets: var(--color-primary-700);
+    --tw-prose-hr: var(--color-neutral-200);
+    --tw-prose-quotes: var(--color-neutral-900);
+    --tw-prose-quote-borders: var(--color-primary-700);
+    --tw-prose-captions: var(--color-neutral-600);
+    --tw-prose-code: var(--color-neutral-900);
+    --tw-prose-pre-bg: var(--color-neutral-900);
+    --tw-prose-th-borders: var(--color-neutral-200);
+    --tw-prose-td-borders: var(--color-neutral-200);
+  }
+
+  .prose-fluid :where(h1):not(:where([class~="not-prose"] *)) {
+    font-size: clamp(1.75rem, 1.5rem + 0.9vw, 2.25rem);
+  }
+
+  .prose-fluid :where(h2):not(:where([class~="not-prose"] *)) {
+    font-size: clamp(1.5rem, 1.35rem + 0.65vw, 1.875rem);
+  }
+
+  .prose-fluid :where(h3):not(:where([class~="not-prose"] *)) {
+    font-size: clamp(1.125rem, 1.06rem + 0.3vw, 1.25rem);
+  }
+}
+
+
+@layer components {
+  .site-shell {
+    width: 100%;
+    max-width: 1280px;
+    margin-inline: auto;
+    padding-inline: clamp(1rem, 3vw, 2rem);
+  }
+
+  .site-section-head {
+    width: min(100%, 860px);
+    margin: clamp(2.75rem, 6vw, 4rem) auto 0;
+  }
+
+  .site-section-head > p {
+    max-width: 760px;
+    margin-inline: auto;
+    line-height: 1.65;
+  }
+
+  .card-surface {
+    min-width: 0;
+  }
+}
+
+@layer base {
+  img,
+  video,
+  iframe {
+    max-width: 100%;
+  }
+
+  input,
+  textarea,
+  select,
+  button {
+    font: inherit;
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  :focus-visible {
+    outline-offset: 2px;
+  }
+}
+
+@media (max-width: 640px) {
+  .site-shell {
+    padding-inline: 1rem;
+  }
+
+  .site-section-head {
+    margin-top: 2.5rem;
+  }
+
+  .site-section-head h1 {
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+  }
+
+  .card-surface {
+    border-radius: 1rem;
+  }
+}
+
+
+@layer base {
+  body {
+    font-family: var(--font-brand);
+    background: var(--color-neutral-50);
+    color: var(--color-neutral-900);
+  }
+
+  :where(a, button, input, select, textarea, summary):focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 3px;
+    box-shadow: 0 0 0 4px var(--focus-ring-soft);
+  }
+
+  ::selection {
+    background: var(--color-primary-50);
+    color: var(--color-primary-950);
+  }
+}
+
+/* AM MOREIRA DESIGN SYSTEM — PUBLIC */
+@layer components {
+  .card-surface {
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    transition: box-shadow .2s ease, transform .2s ease, border-color .2s ease;
+  }
+
+  .card-surface:hover {
+    box-shadow: var(--shadow-card-hover);
+    border-color: var(--color-neutral-200);
+  }
+
+  .btn-club,
+  button,
+  [role="button"] {
+    border-radius: var(--radius-button);
+  }
+}
+
+
+/* =========================================================
+   THEME SWITCHER — SITE + CMS
+   ========================================================= */
+.theme-toggle {
+  min-width: 38px;
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 11px;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-button);
+  background: var(--color-surface);
+  color: var(--color-neutral-600);
+  box-shadow: var(--shadow-card);
+  cursor: pointer;
+  transition: background-color .18s ease, border-color .18s ease, color .18s ease, transform .18s ease;
+}
+
+.theme-toggle--compact {
+  width: 38px;
+  padding: 0;
+}
+
+.theme-toggle:hover {
+  border-color: var(--color-primary-700);
+  background: var(--color-primary-50);
+  color: var(--color-primary-900);
+  transform: translateY(-1px);
+}
+
+html.dark body {
+  background: var(--color-neutral-50);
+  color: var(--color-neutral-900);
+}
+
+html.dark .shadow-sm,
+html.dark .shadow-md,
+html.dark .shadow-lg {
+  --tw-shadow-color: rgb(0 0 0 / .25);
+}
+
+html.dark .card-surface {
+  background: var(--color-surface);
+  border-color: var(--color-neutral-200);
+}
+
+html.dark :where(input, textarea, select) {
+  color-scheme: dark;
+}
+
+html.dark ::selection {
+  background: var(--color-primary-50);
+  color: var(--color-primary-950);
+}
+
+
+/* =========================================================
+   ACCESSIBILITY HARDENING — SITE PÚBLICO
+   ========================================================= */
+body {
+  background: var(--ui-page);
+  color: var(--ui-text);
+}
+
+:where(input, textarea, select) {
+  background: var(--ui-surface);
+  color: var(--ui-text);
+  border-color: var(--ui-control-border);
+}
+
+:where(input, textarea, select)::placeholder {
+  color: var(--ui-text-muted);
+  opacity: 1;
+}
+
+:where(input, textarea, select):focus {
+  border-color: var(--ui-focus);
+  outline: 2px solid var(--ui-focus);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 4px var(--ui-focus-soft);
+}
+
+:where(button, a, input, textarea, select, summary):focus-visible {
+  outline: 2px solid var(--ui-focus) !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 4px var(--ui-focus-soft) !important;
+}
+
+.btn-club-green {
+  background: var(--ui-primary-bg) !important;
+  border-color: var(--ui-primary-bg) !important;
+  color: #fff !important;
+}
+
+.btn-club-green:hover {
+  background: var(--ui-primary-bg-hover) !important;
+  border-color: var(--ui-primary-bg-hover) !important;
+}
+
+.btn-club-red {
+  background: var(--ui-danger-bg) !important;
+  border-color: var(--ui-danger-bg) !important;
+  color: #fff !important;
+}
+
+.btn-club-red:hover {
+  background: var(--ui-danger-bg-hover) !important;
+  border-color: var(--ui-danger-bg-hover) !important;
+}
+
+:where(button, .btn-club, .theme-toggle):disabled {
+  background: var(--ui-disabled-bg) !important;
+  color: var(--ui-disabled-text) !important;
+  border-color: var(--ui-control-border) !important;
+  opacity: 1 !important;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.prose-fluid a {
+  color: var(--ui-primary-text);
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: .08em;
+  text-underline-offset: .18em;
+}
+
+.prose-fluid a:hover {
+  text-decoration-thickness: .14em;
+}
+
+html.dark .text-primary-700,
+html.dark .text-primary-800,
+html.dark .text-primary-900,
+html.dark .hover\:text-primary-800:hover,
+html.dark .hover\:text-primary-900:hover {
+  color: var(--ui-primary-text) !important;
+}
+
+html.dark .text-secondary-800,
+html.dark .text-secondary-900,
+html.dark .hover\:text-secondary-800:hover {
+  color: var(--ui-danger-text) !important;
+}
+
+html.dark .bg-primary-800 {
+  background-color: var(--ui-primary-bg) !important;
+}
+
+html.dark .hover\:bg-primary-950:hover {
+  background-color: var(--ui-primary-bg-hover) !important;
+}
+
+html.dark .bg-primary-50 {
+  background-color: var(--ui-primary-soft) !important;
+}
+
+html.dark .bg-secondary-800 {
+  background-color: var(--ui-danger-bg) !important;
+}
+
+html.dark .hover\:bg-secondary-900:hover {
+  background-color: var(--ui-danger-bg-hover) !important;
+}
+
+html.dark .bg-secondary-50 {
+  background-color: var(--ui-danger-soft) !important;
+}
+
+html.dark .border-primary-700,
+html.dark .focus\:border-primary-700:focus {
+  border-color: var(--ui-focus) !important;
+}
+
+html.dark .ring-primary-700,
+html.dark .focus\:ring-primary-700:focus {
+  --tw-ring-color: var(--ui-focus) !important;
+}
+
+/* O vermelho vivo continua apenas decorativo. */
+html.dark .bg-secondary-500 {
+  background-color: #ff4a4a !important;
+}
+
+/* Elementos interativos com alvo confortável. */
+.theme-toggle {
+  min-width: 40px;
+  min-height: 40px;
+}
+
+/* Evita que o hover seja o único indicador de navegação ativa. */
+nav a[aria-current="page"],
+.router-link-active {
+  font-weight: 700;
+}
+
+/* Movimento reduzido */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Preferências de contraste elevadas */
+@media (prefers-contrast: more) {
+  :where(input, textarea, select, .theme-toggle) {
+    border-width: 2px;
+  }
+
+  .card-surface {
+    border-width: 2px;
+  }
+
+  a {
+    text-underline-offset: .2em;
+  }
+}
+
+/* Windows High Contrast */
+@media (forced-colors: active) {
+  :where(button, a, input, textarea, select, summary) {
+    forced-color-adjust: auto;
+  }
+
+  .card-surface {
+    border: 1px solid CanvasText;
+  }
+}
+
+
+/* =========================================================
+   DARK MODE FINAL — SITE PÚBLICO
+   Camada única de contraste e hierarquia visual.
+   ========================================================= */
+html.dark,
+html.dark body {
+  background: var(--ui-page) !important;
+  color: var(--ui-text) !important;
+}
+
+html.dark .site-navbar {
+  background: rgb(18 27 37 / .96) !important;
+  border-color: var(--ui-divider) !important;
+  box-shadow: 0 6px 24px rgb(0 0 0 / .28) !important;
+}
+
+html.dark .site-footer {
+  background: var(--ui-surface) !important;
+  border-color: var(--ui-divider) !important;
+}
+
+html.dark .card-surface,
+html.dark .bg-surface {
+  background-color: var(--ui-surface) !important;
+  border-color: var(--ui-divider) !important;
+  color: var(--ui-text) !important;
+}
+
+html.dark .card-surface:hover {
+  background-color: var(--ui-surface-raised) !important;
+  border-color: var(--ui-control-border) !important;
+}
+
+html.dark .bg-neutral-50 {
+  background-color: var(--ui-page) !important;
+}
+
+html.dark .border-neutral-200 {
+  border-color: var(--ui-divider) !important;
+}
+
+html.dark .text-neutral-900 {
+  color: var(--ui-text) !important;
+}
+
+html.dark .text-neutral-600 {
+  color: var(--ui-text-muted) !important;
+}
+
+html.dark :where(input, textarea, select) {
+  background: var(--ui-surface-raised) !important;
+  color: var(--ui-text) !important;
+  border-color: var(--ui-control-border) !important;
+}
+
+html.dark :where(input, textarea, select)::placeholder {
+  color: var(--ui-text-muted) !important;
+  opacity: 1 !important;
+}
+
+html.dark .theme-toggle {
+  background: var(--ui-surface-raised) !important;
+  color: var(--ui-text) !important;
+  border-color: var(--ui-control-border) !important;
+}
+
+html.dark .theme-toggle:hover {
+  background: var(--ui-primary-soft) !important;
+  color: var(--ui-primary-text) !important;
+  border-color: var(--ui-focus) !important;
+}
+
+html.dark .btn-club-green {
+  background: var(--ui-primary-bg) !important;
+  border-color: var(--ui-primary-bg) !important;
+  color: #fff !important;
+}
+
+html.dark .btn-club-green:hover {
+  background: var(--ui-primary-bg-hover) !important;
+  border-color: var(--ui-primary-bg-hover) !important;
+}
+
+html.dark .btn-club-red {
+  background: var(--ui-danger-bg) !important;
+  border-color: var(--ui-danger-bg) !important;
+  color: #fff !important;
+}
+
+html.dark .btn-club-red:hover {
+  background: var(--ui-danger-bg-hover) !important;
+  border-color: var(--ui-danger-bg-hover) !important;
+}
+
+html.dark :where(a,button,input,textarea,select,summary):focus-visible {
+  outline: 3px solid var(--ui-focus) !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 5px var(--ui-focus-soft) !important;
+}
+
+html.dark .prose-fluid {
+  --tw-prose-body: var(--ui-text-muted);
+  --tw-prose-headings: var(--ui-text);
+  --tw-prose-links: var(--ui-primary-text);
+  --tw-prose-bold: var(--ui-text);
+  --tw-prose-hr: var(--ui-divider);
+  --tw-prose-quotes: var(--ui-text);
+  --tw-prose-quote-borders: var(--ui-focus);
+  --tw-prose-captions: var(--ui-text-muted);
+  --tw-prose-code: var(--ui-text);
+  --tw-prose-pre-bg: var(--ui-surface-raised);
+  --tw-prose-th-borders: var(--ui-divider);
+  --tw-prose-td-borders: var(--ui-divider);
+}
+
+html.dark .dialog-zoom::backdrop {
+  background: rgb(0 0 0 / .88) !important;
+}
+
+
+/* =========================================================
+   LOGOS — PRESERVAÇÃO DA IDENTIDADE ORIGINAL
+   Dark mode nunca altera cor, luminosidade ou opacidade.
+   ========================================================= */
+.brand-logo-original,
+.brand-logo-original img,
+.brand-logo-original picture,
+.brand-logo-original source,
+.site-navbar img[src*="logo"],
+.site-footer img[src*="logo"],
+img[src*="/logos/"],
+img[src*="/logo"],
+img[src*="logowbg"],
+img[alt*="Logo"],
+img[alt*="logo"] {
+  filter: none !important;
+  -webkit-filter: none !important;
+  opacity: 1 !important;
+  mix-blend-mode: normal !important;
+  isolation: isolate;
+}
+
+html.dark .brand-logo-original,
+html.dark .brand-logo-original img,
+html.dark .site-navbar img[src*="logo"],
+html.dark .site-footer img[src*="logo"],
+html.dark img[src*="/logos/"],
+html.dark img[src*="/logo"],
+html.dark img[src*="logowbg"],
+html.dark img[alt*="Logo"],
+html.dark img[alt*="logo"] {
+  filter: none !important;
+  -webkit-filter: none !important;
+  opacity: 1 !important;
+  mix-blend-mode: normal !important;
+  color-scheme: light;
+}
+
+/* O container pode adaptar-se ao tema, mas nunca o próprio ficheiro do logo. */
+html.dark .brand-logo-surface {
+  background: #ffffff !important;
+  border-color: var(--ui-divider) !important;
+}
+
+
+/* =========================================================
+   LOGO FIX FINAL — DARK MODE
+   O brasão mantém exatamente a apresentação do modo claro.
+   ========================================================= */
+html.dark .brand-logo-original,
+html.dark img.brand-logo-original,
+html.dark .site-navbar img[src*="logo"],
+html.dark .site-footer img[src*="logo"],
+html.dark img[src*="logowbg"] {
+  filter: none !important;
+  -webkit-filter: none !important;
+  opacity: 1 !important;
+  mix-blend-mode: normal !important;
+  background: transparent !important;
+  color-scheme: light !important;
+  forced-color-adjust: none !important;
+}
+
+/* Nunca aplicar filtros herdados/temáticos ao conteúdo gráfico do brasão. */
+html.dark picture:has(.brand-logo-original),
+html.dark picture:has(img[src*="logowbg"]) {
+  filter: none !important;
+  opacity: 1 !important;
+  mix-blend-mode: normal !important;
+  color-scheme: light !important;
+}
+
+/* A zona institucional do logo permanece neutra como no modo claro.
+   O resto da navbar/sidebar continua em dark mode. */
+html.dark .brand-logo-surface,
+html.dark .logo-surface {
+  background: #f8fafc !important;
+  color-scheme: light !important;
+}
+
+
+/* =========================================================
+   HOME HERO — FULL VIEWPORT
+   ========================================================= */
+.home-hero {
+  position: relative;
+  width: 100vw;
+  min-height: 100svh;
+  margin-left: calc(50% - 50vw);
+  overflow: hidden;
+  isolation: isolate;
+  display: flex;
+  align-items: stretch;
+  background: #07100a;
+}
+
+.home-hero__media,
+.home-hero__media img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.home-hero__media {
+  z-index: -3;
+}
+
+.home-hero__media img {
+  display: block;
+  object-fit: cover;
+  object-position: center;
+  filter: none !important;
+  opacity: 1 !important;
+  mix-blend-mode: normal !important;
+}
+
+.home-hero__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background:
+    linear-gradient(
+      90deg,
+      rgb(2 11 5 / .90) 0%,
+      rgb(2 11 5 / .76) 38%,
+      rgb(2 11 5 / .42) 68%,
+      rgb(2 11 5 / .22) 100%
+    ),
+    linear-gradient(
+      180deg,
+      rgb(0 0 0 / .12) 0%,
+      transparent 45%,
+      rgb(0 0 0 / .34) 100%
+    );
+}
+
+.home-hero__content {
+  position: relative;
+  min-height: inherit;
+  display: flex;
+  align-items: center;
+  padding-top: clamp(2.5rem, 8vh, 6rem);
+  padding-bottom: clamp(4.5rem, 9vh, 7rem);
+}
+
+.home-hero__copy {
+  width: min(100%, 760px);
+}
+
+.home-hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 14px;
+  color: #d8f5d8;
+  font-size: clamp(.75rem, 1.2vw, .875rem);
+  font-weight: 750;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+
+.home-hero__eyebrow::before {
+  content: "";
+  width: 28px;
+  height: 3px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #ff0000 0 50%, #007000 50%);
+}
+
+.home-hero h1 {
+  max-width: 760px;
+  margin: 0;
+  color: #fff;
+  font-size: clamp(2.4rem, 6vw, 5.25rem);
+  font-weight: 800;
+  letter-spacing: -.045em;
+  line-height: .99;
+  text-wrap: balance;
+  text-shadow: 0 3px 18px rgb(0 0 0 / .34);
+}
+
+.home-hero__description {
+  max-width: 690px;
+  margin: clamp(1.25rem, 2.5vw, 1.75rem) 0 0;
+  color: #e8eef4;
+  font-size: clamp(1rem, 1.45vw, 1.16rem);
+  line-height: 1.7;
+  text-shadow: 0 2px 12px rgb(0 0 0 / .38);
+}
+
+.home-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: clamp(1.75rem, 3vw, 2.25rem);
+}
+
+.home-hero__button {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 11px 20px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-button);
+  font-size: .94rem;
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+  transition:
+    background-color .18s ease,
+    border-color .18s ease,
+    color .18s ease,
+    transform .18s ease;
+}
+
+.home-hero__button:hover {
+  transform: translateY(-2px);
+}
+
+.home-hero__button--primary {
+  background: #005c00;
+  border-color: #238423;
+  color: #fff;
+}
+
+.home-hero__button--primary:hover {
+  background: #003300;
+  border-color: #4fb64f;
+}
+
+.home-hero__button--secondary {
+  background: #b80000;
+  border-color: #db4d4d;
+  color: #fff;
+}
+
+.home-hero__button--secondary:hover {
+  background: #990000;
+  border-color: #ff9696;
+}
+
+.home-hero__button:focus-visible,
+.home-hero__scroll:focus-visible {
+  outline: 3px solid #8ad78a !important;
+  outline-offset: 4px !important;
+  box-shadow: 0 0 0 5px rgb(0 0 0 / .48) !important;
+}
+
+.home-hero__scroll {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  translate: -50% 0;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 7px 10px;
+  color: #fff;
+  font-size: .68rem;
+  font-weight: 650;
+  letter-spacing: .08em;
+  text-decoration: none;
+  text-transform: uppercase;
+  opacity: .88;
+}
+
+.home-hero__scroll:hover {
+  opacity: 1;
+}
+
+#conteudo-principal {
+  scroll-margin-top: 6rem;
+}
+
+@media (min-width: 640px) {
+  .home-hero {
+    min-height: 100svh;
+  }
+}
+
+@media (max-width: 767px) {
+  .home-hero__overlay {
+    background:
+      linear-gradient(
+        180deg,
+        rgb(2 11 5 / .46) 0%,
+        rgb(2 11 5 / .66) 38%,
+        rgb(2 11 5 / .92) 100%
+      );
+  }
+
+  .home-hero__content {
+    align-items: flex-end;
+    padding-top: 4rem;
+    padding-bottom: 5.5rem;
+  }
+
+  .home-hero__copy {
+    width: 100%;
+  }
+
+  .home-hero h1 {
+    max-width: 95%;
+    font-size: clamp(2.25rem, 11vw, 3.7rem);
+    line-height: 1.02;
+  }
+
+  .home-hero__description {
+    max-width: 100%;
+    font-size: .97rem;
+    line-height: 1.62;
+  }
+
+  .home-hero__actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .home-hero__button {
+    width: 100%;
+  }
+}
+
+@media (max-height: 700px) and (min-width: 768px) {
+  .home-hero__content {
+    padding-top: 2rem;
+    padding-bottom: 3.5rem;
+  }
+
+  .home-hero h1 {
+    font-size: clamp(2.4rem, 5vw, 4rem);
+  }
+
+  .home-hero__description {
+    line-height: 1.55;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-hero__button {
+    transition: none;
+  }
+
+  .home-hero__button:hover {
+    transform: none;
+  }
+}
+
+
+/* =========================================================
+   HEADER + HOME HERO — INTEGRAÇÃO VISUAL E ACESSÍVEL
+   ========================================================= */
+.site-main--home {
+  padding-top: 0 !important;
+}
+
+.site-navbar {
+  border-bottom: 1px solid var(--ui-divider);
+  background: color-mix(in srgb, var(--ui-surface) 96%, transparent);
+  color: var(--ui-text);
+  box-shadow: 0 1px 8px rgb(15 23 42 / .08);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition:
+    background-color .22s ease,
+    border-color .22s ease,
+    box-shadow .22s ease,
+    color .22s ease;
+}
+
+/* Sobre o hero, o cabeçalho deixa a fotografia continuar por trás. */
+.site-navbar--hero {
+  background: linear-gradient(180deg, rgb(0 0 0 / .54), rgb(0 0 0 / .16) 72%, transparent) !important;
+  border-bottom-color: rgb(255 255 255 / .22) !important;
+  box-shadow: none !important;
+  color: #fff !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.site-navbar--hero .site-navbar__content--hero :where(nav a, .theme-toggle, a[aria-label], button[aria-label]) {
+  color: #fff !important;
+}
+
+.site-navbar--hero .site-navbar__content--hero nav a {
+  text-shadow: 0 1px 6px rgb(0 0 0 / .72);
+}
+
+.site-navbar--hero .site-navbar__content--hero nav a:hover {
+  color: #fff !important;
+  background: rgb(255 255 255 / .14) !important;
+}
+
+.site-navbar--hero .site-navbar__content--hero nav a[aria-current="page"] {
+  color: #fff !important;
+  border-bottom-color: #8fdb8f !important;
+  background: rgb(0 0 0 / .22) !important;
+}
+
+.site-navbar--hero .site-navbar__content--hero .theme-toggle,
+.site-navbar--hero .site-navbar__content--hero button[aria-label="Menu"] {
+  background: rgb(0 0 0 / .38) !important;
+  border-color: rgb(255 255 255 / .52) !important;
+  color: #fff !important;
+  box-shadow: none !important;
+}
+
+.site-navbar--hero .site-navbar__content--hero .theme-toggle:hover,
+.site-navbar--hero .site-navbar__content--hero button[aria-label="Menu"]:hover {
+  background: rgb(0 0 0 / .62) !important;
+  border-color: #fff !important;
+}
+
+.site-navbar--hero .site-navbar__content--hero .bg-neutral-200 {
+  background-color: rgb(255 255 255 / .48) !important;
+}
+
+/* No tema claro, ao começar o scroll, o menu fica explicitamente branco. */
+html:not(.dark) .site-navbar--scrolled {
+  background: rgb(255 255 255 / .98) !important;
+  border-bottom-color: #d7ddd8 !important;
+  color: #172019 !important;
+  box-shadow: 0 6px 22px rgb(15 23 42 / .10) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* Em dark mantém a superfície escura acessível depois do scroll. */
+html.dark .site-navbar:not(.site-navbar--hero),
+html.dark .site-navbar--scrolled {
+  background: rgb(15 25 32 / .98) !important;
+  border-bottom-color: var(--ui-divider) !important;
+  color: var(--ui-text) !important;
+}
+
+/* O brasão é sempre o asset preparado para fundo escuro e nunca recebe filtros. */
+.site-navbar .brand-logo-original,
+html.dark .site-navbar .brand-logo-original,
+html:not(.dark) .site-navbar .brand-logo-original {
+  filter: none !important;
+  -webkit-filter: none !important;
+  opacity: 1 !important;
+  mix-blend-mode: normal !important;
+  forced-color-adjust: none !important;
+}
+
+/* O hero começa no topo real do viewport, incluindo a área atrás do header. */
+.home-hero__content {
+  padding-top: clamp(7rem, 14vh, 10rem);
+}
+
+@media (max-width: 1023px) {
+  /* Menu aberto precisa de superfície opaca para não depender da fotografia. */
+  .site-navbar:not(.site-navbar--hero) nav {
+    color: var(--ui-text);
+  }
+
+  .site-navbar--hero nav {
+    border-radius: 0 0 14px 14px;
+  }
+}
+
+@media (max-width: 767px) {
+  .home-hero__content {
+    padding-top: 7.5rem;
+  }
+}
+
+@media (prefers-contrast: more) {
+  .site-navbar--hero {
+    background: rgb(0 0 0 / .82) !important;
+    border-bottom-color: #fff !important;
+  }
+
+  .site-navbar--hero .site-navbar__content--hero :where(nav a, .theme-toggle, a[aria-label], button[aria-label]) {
+    text-shadow: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .site-navbar--hero {
+    background: Canvas !important;
+    color: CanvasText !important;
+    border-bottom: 1px solid CanvasText !important;
+  }
+
+  .site-navbar--hero .site-navbar__content--hero :where(nav a, .theme-toggle, a[aria-label], button[aria-label]) {
+    color: CanvasText !important;
+    forced-color-adjust: auto;
+  }
+}
+
+
+/* =========================================================
+   HEADER LIGHT — ESTADO APÓS SCROLL NA HOME
+   ========================================================= */
+html:not(.dark) .site-navbar--scrolled {
+  background: rgb(255 255 255 / .985) !important;
+  border-bottom-color: #e2e8f0 !important;
+  color: #0f172a !important;
+  box-shadow: 0 8px 28px rgb(15 23 42 / .10) !important;
+  backdrop-filter: blur(18px) saturate(1.08) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(1.08) !important;
+}
+
+html:not(.dark) .site-navbar--scrolled nav a {
+  color: #475569 !important;
+  text-shadow: none !important;
+}
+
+html:not(.dark) .site-navbar--scrolled nav a:hover {
+  color: #004c00 !important;
+  background: #ebffeb !important;
+}
+
+html:not(.dark) .site-navbar--scrolled nav a[aria-current="page"] {
+  color: #004c00 !important;
+  background: transparent !important;
+  border-bottom-color: #005c00 !important;
+}
+
+html:not(.dark) .site-navbar--scrolled .theme-toggle,
+html:not(.dark) .site-navbar--scrolled button[aria-label="Menu"] {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 1px 3px rgb(15 23 42 / .08) !important;
+}
+
+html:not(.dark) .site-navbar--scrolled .theme-toggle:hover,
+html:not(.dark) .site-navbar--scrolled button[aria-label="Menu"]:hover {
+  background: #ebffeb !important;
+  color: #004c00 !important;
+  border-color: #007000 !important;
+}
+
+html:not(.dark) .site-navbar--scrolled a[aria-label="Instagram"],
+html:not(.dark) .site-navbar--scrolled a[aria-label="Facebook"],
+html:not(.dark) .site-navbar--scrolled a[aria-label="Tiktok"] {
+  color: #475569 !important;
+}
+
+html:not(.dark) .site-navbar--scrolled a[aria-label="Instagram"]:hover,
+html:not(.dark) .site-navbar--scrolled a[aria-label="Facebook"]:hover,
+html:not(.dark) .site-navbar--scrolled a[aria-label="Tiktok"]:hover {
+  color: #005c00 !important;
+}
+
+html:not(.dark) .site-navbar--scrolled .bg-neutral-200 {
+  background-color: #e2e8f0 !important;
+}
+
+/* Se o menu mobile for aberto após scroll, fica sempre sobre uma superfície clara. */
+@media (max-width: 1023px) {
+  html:not(.dark) .site-navbar--scrolled nav {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border-top-color: #e2e8f0 !important;
+    box-shadow: 0 14px 26px rgb(15 23 42 / .08);
+  }
+}
+
+
+/* =========================================================
+   HEADER / SCROLL FINAL
+   - qualquer scroll na home ativa imediatamente o header light
+   - header fica sempre acima do hero e do conteúdo
+   ========================================================= */
+.site-navbar {
+  position: fixed !important;
+  z-index: 1000 !important;
+  isolation: isolate;
+}
+
+.site-main--home,
+.site-main--home .home-hero,
+.site-main--home ~ *,
+main {
+  position: relative;
+  z-index: 0;
+}
+
+html:not(.dark) .site-navbar.site-navbar--scrolled {
+  background: #ffffff !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  color: #0f172a !important;
+  box-shadow: 0 8px 28px rgb(15 23 42 / .12) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html:not(.dark) .site-navbar.site-navbar--scrolled .site-shell {
+  position: relative;
+  z-index: 2;
+}
+
+/* Garante que nenhuma transparência do estado hero sobrevive após o primeiro scroll. */
+html:not(.dark) .site-navbar.site-navbar--scrolled::before,
+html:not(.dark) .site-navbar.site-navbar--scrolled::after {
+  content: none !important;
+  display: none !important;
+}
+
+html:not(.dark) .site-navbar.site-navbar--scrolled nav a {
+  color: #475569 !important;
+  text-shadow: none !important;
+}
+
+html:not(.dark) .site-navbar.site-navbar--scrolled nav a:hover {
+  background: #ebffeb !important;
+  color: #004c00 !important;
+}
+
+html:not(.dark) .site-navbar.site-navbar--scrolled nav a[aria-current="page"] {
+  background: transparent !important;
+  color: #004c00 !important;
+  border-bottom-color: #005c00 !important;
+}
+
+html:not(.dark) .site-navbar.site-navbar--scrolled .theme-toggle,
+html:not(.dark) .site-navbar.site-navbar--scrolled button[aria-label="Menu"] {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+html:not(.dark) .site-navbar.site-navbar--scrolled .theme-toggle:hover,
+html:not(.dark) .site-navbar.site-navbar--scrolled button[aria-label="Menu"]:hover {
+  background: #ebffeb !important;
+  color: #004c00 !important;
+  border-color: #007000 !important;
+}
+
+/* Dark mantém a mesma regra de prioridade, mas com superfície dark. */
+html.dark .site-navbar.site-navbar--scrolled {
+  z-index: 1000 !important;
+  background: rgb(15 25 32 / .985) !important;
+  border-bottom-color: var(--ui-divider) !important;
+  box-shadow: 0 8px 28px rgb(0 0 0 / .28) !important;
 }

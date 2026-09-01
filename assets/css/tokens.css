@@ -1,0 +1,23 @@
+:root{
+  --color-black:#000000;--color-white:#ffffff;--color-bg-soft:#f3f3ff;--color-line:#dfdfe9;
+  --color-accent:#7a0510;--color-accent-light:#c9797f;--color-accent-dark:#2f0104;
+  --font-display:'Cormorant SC',Georgia,serif;--font-body:'Poppins',Arial,sans-serif;--font-brand:var(--font-body);
+  --space-1:4px;--space-2:8px;--space-3:16px;--space-4:24px;--space-5:40px;--space-6:64px;--space-7:96px;
+  --radius-sm:2px;--radius-md:4px;--radius-card:4px;--radius-button:4px;
+  --color-primary-50:#f3f3ff;--color-primary-700:#7a0510;--color-primary-800:#000000;--color-primary-900:#000000;--color-primary-950:#000000;
+  --color-secondary-50:#f3f3ff;--color-secondary-500:#c9797f;--color-secondary-800:#7a0510;--color-secondary-900:#2f0104;--color-secondary-950:#2f0104;
+  --color-neutral-50:#f3f3ff;--color-neutral-200:#dfdfe9;--color-neutral-600:#555555;--color-neutral-900:#000000;--color-surface:#ffffff;
+  --ui-page:#f3f3ff;--ui-surface:#ffffff;--ui-surface-raised:#ffffff;--ui-surface-soft:#f3f3ff;--ui-overlay:rgb(0 0 0/.58);
+  --ui-text:#000000;--ui-text-muted:#555555;--ui-divider:#dfdfe9;--ui-control-border:#777780;--ui-disabled-bg:#eeeeF5;--ui-disabled-text:#777777;
+  --ui-primary-bg:#000000;--ui-primary-bg-hover:#2f0104;--ui-primary-bg-active:#7a0510;--ui-primary-text:#7a0510;--ui-primary-soft:#f3f3ff;
+  --ui-danger-bg:#7a0510;--ui-danger-bg-hover:#2f0104;--ui-danger-text:#7a0510;--ui-danger-soft:#fff1f2;
+  --ui-focus:#7a0510;--ui-focus-soft:rgb(122 5 16/.18);--focus-ring:var(--ui-focus);--focus-ring-soft:var(--ui-focus-soft);
+  --shadow-card:0 1px 2px rgb(0 0 0/.06);--shadow-card-hover:0 10px 28px rgb(0 0 0/.10);
+}
+html.dark{
+  --color-bg-soft:#111113;--color-line:#34343c;--color-neutral-50:#101012;--color-neutral-200:#34343c;--color-neutral-600:#b8b8c0;--color-neutral-900:#ffffff;--color-surface:#18181b;
+  --ui-page:#0a0a0b;--ui-surface:#18181b;--ui-surface-raised:#202024;--ui-surface-soft:#111113;--ui-overlay:rgb(0 0 0/.75);
+  --ui-text:#ffffff;--ui-text-muted:#c7c7cf;--ui-divider:#3d3d46;--ui-control-border:#73737c;--ui-disabled-bg:#29292e;--ui-disabled-text:#a1a1aa;
+  --ui-primary-bg:#7a0510;--ui-primary-bg-hover:#c9797f;--ui-primary-bg-active:#2f0104;--ui-primary-text:#f0aeb3;--ui-primary-soft:#2f0104;
+  --ui-danger-bg:#7a0510;--ui-danger-bg-hover:#c9797f;--ui-danger-text:#f0aeb3;--ui-danger-soft:#2f0104;--ui-focus:#c9797f;--ui-focus-soft:rgb(201 121 127/.22);
+}
