@@ -1,11 +1,11 @@
 export const usePublicContent = () => {
-  const settings = useState<any>('public-company-settings', () => null)
+  const { settings: settingsRows, load } = usePublicSiteData()
+  const settings = computed<any>(() => settingsRows.value.find((row: any) => row.id === 'company') || settingsRows.value[0] || {})
+
   async function loadSettings() {
-    if (!settings.value) {
-      const rows = await $fetch<any[]>('/api/public/settings')
-      settings.value = rows.find(row => row.id === 'company') || rows[0] || {}
-    }
+    await load()
     return settings.value
   }
+
   return { settings, loadSettings }
 }

@@ -42,6 +42,12 @@ export default defineEventHandler(async(event)=>{
     const user=requireAuth(event);const row=await usersService.updateProfile(user.id,await readBody(event));await audit(row,'update','profile',row.id);return {user:row}
   }
   if(path[0]==='auth'&&path[1]==='logout'&&method==='POST'){const user=requireAuth(event);await audit(user,'logout','auth',user.id);return {ok:true}}
+  if(path[0]==='public'&&path[1]==='site-data'&&method==='GET'){
+    setHeader(event,'cache-control','private, no-cache, max-age=0')
+    const resources=['pages','contentBlocks','products','categories','collections','events','gallery','menus','settings']
+    const rows=await Promise.all(resources.map((resource)=>amServices[resource].listPublic()))
+    return Object.fromEntries(resources.map((resource,index)=>[resource,rows[index]]))
+  }
   if(path[0]==='public'&&path[1]==='contact'&&method==='POST'){
     const ip=getRequestIP(event,{xForwardedFor:true})||'unknown', now=Date.now(), hit=contactHits.get(ip)
     if(hit&&now-hit.at<60000&&hit.count>=5)fail(429,'Demasiados pedidos. Tenta novamente dentro de um minuto.')

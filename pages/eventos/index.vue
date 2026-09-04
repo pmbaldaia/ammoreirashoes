@@ -1,6 +1,6 @@
 <script setup lang="ts">
 await usePublicPage('eventos')
-const { data: items } = await useFetch('/api/public/events', { default: () => [], cache: 'no-cache' })
+const { events: items } = usePublicSiteData()
 
 function daysLabel(item: any) {
   if (Array.isArray(item.fairDays) && item.fairDays.length) return `Dias ${item.fairDays.join(', ').replace(/, ([^,]*)$/, ' e $1')}`

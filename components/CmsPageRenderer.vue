@@ -1,17 +1,36 @@
 <script setup lang="ts">
 const props = withDefaults(defineProps<{ pageSlug?: string }>(), { pageSlug: '' })
-const [{ data: pages }, { data: blocks }, { data: products }, { data: events }] = await Promise.all([
-  useFetch('/api/public/pages', { default: () => [] }), useFetch('/api/public/contentBlocks', { default: () => [] }),
-  useFetch('/api/public/products', { default: () => [] }), useFetch('/api/public/events', { default: () => [] }),
-])
+const { pages, contentBlocks: blocks, products, events, load } = usePublicSiteData()
+await load()
+
 const page = computed(() => pages.value.find((item: any) => item.slug === props.pageSlug))
-// An orphaned content block must not keep a deleted/unpublished page available.
 if (!page.value) throw createError({ statusCode: 404, message: 'Página não encontrada' })
-const visibleBlocks = computed(() => blocks.value.filter((item: any) => item.pageSlug === props.pageSlug && item.status === 'published').sort((a: any, b: any) => (a.order || 0) - (b.order || 0)))
-const featuredProducts = computed(() => products.value.filter((item: any) => item.featured).slice(0, 3).length ? products.value.filter((item: any) => item.featured).slice(0, 3) : products.value.slice(0, 3))
-const featuredEvents = computed(() => events.value.filter((item: any) => item.featured).slice(0, 3).length ? events.value.filter((item: any) => item.featured).slice(0, 3) : events.value.slice(0, 3))
-const action = (value: string) => { const [label, url] = String(value).split('|'); return { label, url: url || '#' } }
-useHead(() => ({ title: page.value?.seoTitle || page.value?.title || 'AM Moreira', meta: [{ name: 'description', content: page.value?.metaDescription || '' }, { name: 'robots', content: page.value?.indexable === false ? 'noindex, nofollow' : 'index, follow' }], link: page.value?.canonical ? [{ rel: 'canonical', href: page.value.canonical }] : [] }))
+
+const visibleBlocks = computed(() => blocks.value
+  .filter((item: any) => item.pageSlug === props.pageSlug && item.status === 'published')
+  .sort((a: any, b: any) => (a.order || 0) - (b.order || 0)))
+
+const featuredProducts = computed(() => {
+  const featured = products.value.filter((item: any) => item.featured).slice(0, 3)
+  return featured.length ? featured : products.value.slice(0, 3)
+})
+const featuredEvents = computed(() => {
+  const featured = events.value.filter((item: any) => item.featured).slice(0, 3)
+  return featured.length ? featured : events.value.slice(0, 3)
+})
+const action = (value: string) => {
+  const [label, url] = String(value).split('|')
+  return { label, url: url || '#' }
+}
+
+useHead(() => ({
+  title: page.value?.seoTitle || page.value?.title || 'AM Moreira',
+  meta: [
+    { name: 'description', content: page.value?.metaDescription || '' },
+    { name: 'robots', content: page.value?.indexable === false ? 'noindex, nofollow' : 'index, follow' },
+  ],
+  link: page.value?.canonical ? [{ rel: 'canonical', href: page.value.canonical }] : [],
+}))
 </script>
 
 <template>

@@ -1125,3 +1125,36 @@ html.dark .cms-sidebar .brand__logo {
     font-size: 11px !important;
   }
 }
+
+/* Frontend CTAs: Primary permanece vermelho também em modo escuro. */
+html.dark .am-site .am-btn,
+html.dark .am-site .am-btn--light,
+html.dark .am-site .am-nav__cta {
+  background: var(--color-accent) !important;
+  border-color: var(--color-accent) !important;
+  color: var(--color-white) !important;
+  box-shadow: none !important;
+}
+
+html.dark .am-site .am-btn:hover,
+html.dark .am-site .am-btn--light:hover,
+html.dark .am-site .am-nav__cta:hover {
+  background: #9d0a18 !important;
+  border-color: #9d0a18 !important;
+  color: var(--color-white) !important;
+}
+
+html.dark .am-site .am-btn:active,
+html.dark .am-site .am-btn--light:active,
+html.dark .am-site .am-nav__cta:active {
+  background: var(--color-accent-dark) !important;
+  border-color: var(--color-accent-dark) !important;
+  color: var(--color-white) !important;
+}
+
+html.dark .am-site .am-btn:focus-visible,
+html.dark .am-site .am-btn--light:focus-visible,
+html.dark .am-site .am-nav__cta:focus-visible {
+  outline: 3px solid var(--color-accent-light) !important;
+  outline-offset: 3px;
+}

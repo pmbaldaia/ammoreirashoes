@@ -1,33 +1,25 @@
 <script setup lang="ts">
 const open = ref(false)
 const { settings, loadSettings } = usePublicContent()
+const { menus, load, refreshIfStale } = usePublicSiteData()
 const { isDark } = useThemeMode()
 const route = useRoute()
 
-await loadSettings()
-
-const { data: menus, refresh: refreshMenus } = await useFetch<any[]>('/api/public/menus', {
-  default: () => [],
-  cache: 'no-cache',
-  key: 'public-header-menus',
-})
+await Promise.all([load(), loadSettings()])
 
 const links = computed(() =>
   (menus.value || [])
-    // /api/public/menus already returns only public/active records.
-    // Keep compatibility with older MongoDB menu rows that used status='published'
-    // or did not yet have a location field. Re-filtering only status='active' here
-    // made valid CMS menus disappear after deploy.
     .filter((item: any) => !item.location || item.location === 'header')
     .sort((a: any, b: any) => (a.order || 0) - (b.order || 0)),
 )
 
 watch(
   () => route.fullPath,
-  async () => {
+  () => {
+    // Route changes must be immediate. Navigation data is already in the
+    // shared public-site cache, so there is no reason to refetch menus here.
     open.value = false
-    // Keep CMS navigation fresh during client-side navigation without a hard refresh.
-    await refreshMenus()
+    void refreshIfStale()
   },
 )
 </script>

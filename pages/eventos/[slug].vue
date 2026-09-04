@@ -1,7 +1,7 @@
 <script setup lang="ts">
 const route = useRoute()
 await usePublicPage('eventos')
-const { data: events } = await useFetch('/api/public/events', { default: () => [], cache: 'no-cache' })
+const { events } = usePublicSiteData()
 const event = computed(() => events.value.find((item:any) => item.slug === route.params.slug))
 if (!event.value) throw createError({ statusCode: 404, message: 'Feira ou evento não encontrado' })
 

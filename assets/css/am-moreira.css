@@ -54,8 +54,8 @@ html.dark .am-split__visual{background:#000;border:1px solid var(--ui-divider)}
 html.dark .am-empty{background:var(--ui-surface-soft);border-color:var(--ui-control-border)}
 html.dark .am-btn{background:var(--color-accent);border-color:var(--color-accent);color:#fff!important}
 html.dark .am-btn:hover{background:#9d0a18;border-color:#9d0a18;color:#fff!important}
-html.dark .am-btn--light{background:transparent;border-color:#fff;color:#fff!important}
-html.dark .am-btn--light:hover{background:#fff;color:#000!important}
+html.dark .am-btn--light{background:var(--color-accent);border-color:var(--color-accent);color:#fff!important}
+html.dark .am-btn--light:hover{background:#9d0a18;border-color:#9d0a18;color:#fff!important}
 html.dark .am-contact,
 html.dark .am-footer{background:#000;border-color:var(--ui-divider)}
 html.dark .am-form input,

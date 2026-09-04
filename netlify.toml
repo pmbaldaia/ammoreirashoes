@@ -10,3 +10,13 @@ SECRETS_SCAN_OMIT_KEYS = "NUXT_SITE_NAME,MONGODB_DB,NUXT_SITE_URL"
 [functions]
 node_bundler = "esbuild"
 external_node_modules = ["mongodb", "sharp"]
+
+[[headers]]
+for = "/_nuxt/*"
+  [headers.values]
+  Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+for = "/favicon.ico"
+  [headers.values]
+  Cache-Control = "public, max-age=86400"

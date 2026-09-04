@@ -1,11 +1,29 @@
 import crypto from 'node:crypto'
 import { getMongoDb } from './mongo.mjs'
 
-async function collectionFor(resource) {
+const indexPromises = new Map()
+
+async function collectionFor(resource, ensureIndexes = false) {
   const db = await getMongoDb()
   const collection = db.collection(resource)
-  await collection.createIndex({ id: 1 }, { unique: true, sparse: true })
-  if (resource === 'users') { await collection.createIndex({ email: 1 }, { unique: true, sparse: true }); await collection.createIndex({ username: 1 }, { unique: true, sparse: true }) }
+
+  // Indexes are created by `npm run mongo:setup`. Public reads must never
+  // wait for createIndex(), especially on Netlify cold starts. For write
+  // paths we keep a once-per-process safeguard without penalising visitors.
+  if (ensureIndexes && !indexPromises.has(resource)) {
+    indexPromises.set(resource, (async () => {
+      await collection.createIndex({ id: 1 }, { unique: true, sparse: true })
+      if (resource === 'users') {
+        await collection.createIndex({ email: 1 }, { unique: true, sparse: true })
+        await collection.createIndex({ username: 1 }, { unique: true, sparse: true })
+      }
+    })().catch((error) => {
+      indexPromises.delete(resource)
+      throw error
+    }))
+  }
+
+  if (ensureIndexes) await indexPromises.get(resource)
   return collection
 }
 
@@ -28,7 +46,7 @@ export function createMongoRepository(resource) {
     },
 
     async create(payload) {
-      const collection = await collectionFor(resource)
+      const collection = await collectionFor(resource, true)
       const now = new Date().toISOString()
       const item = {
         ...payload,
@@ -41,7 +59,7 @@ export function createMongoRepository(resource) {
     },
 
     async update(id, payload) {
-      const collection = await collectionFor(resource)
+      const collection = await collectionFor(resource, true)
       const current = await collection.findOne({ id: String(id) })
       if (!current) return null
       const { _id, id: ignoredId, ...safePayload } = payload || {}
@@ -53,7 +71,7 @@ export function createMongoRepository(resource) {
     },
 
     async remove(id) {
-      const collection = await collectionFor(resource)
+      const collection = await collectionFor(resource, true)
       const result = await collection.deleteOne({ id: String(id) })
       return result.deletedCount > 0
     },
