@@ -1,5 +1,4 @@
 import { MongoClient, ServerApiVersion, GridFSBucket } from 'mongodb'
-import { ensureAmMoreiraDatabase } from './bootstrap.mjs'
 
 const globalKey = '__amMoreiraMongoClientPromise'
 
@@ -28,20 +27,21 @@ export async function getMongoDb() {
       },
       maxPoolSize: 10,
       minPoolSize: 0,
-      serverSelectionTimeoutMS: 10000,
+      // Keep below Netlify's default synchronous function timeout, leaving
+      // enough time for Nitro to return a controlled error to the browser.
+      serverSelectionTimeoutMS: 8_000,
     })
-    globalThis[globalKey] = client.connect()
-  }
-  const client = await globalThis[globalKey]
-  const db = client.db(dbName)
-  if (!globalThis.__amMoreiraBootstrapPromise) {
-    globalThis.__amMoreiraBootstrapPromise = ensureAmMoreiraDatabase(db).catch((error) => {
-      globalThis.__amMoreiraBootstrapPromise = null
+    globalThis[globalKey] = client.connect().catch((error) => {
+      // A temporary Atlas/network failure must not poison a warm Netlify
+      // function for all later requests.
+      globalThis[globalKey] = null
       throw error
     })
   }
-  await globalThis.__amMoreiraBootstrapPromise
-  return db
+  const client = await globalThis[globalKey]
+  // Runtime requests must read only the current MongoDB state. Seeding is an
+  // explicit setup action, never a side effect of visiting the site or CMS.
+  return client.db(dbName)
 }
 
 export async function getGridFsBucket() {

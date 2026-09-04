@@ -32,10 +32,12 @@ const props=withDefaults(defineProps<{
   allowCreate?: boolean
   allowEdit?: boolean
   allowDelete?: boolean
+  showPublishAction?: boolean
+  editActionLabel?: string
   panelNote?: string
   emptyText?: string
   defaultFilters?: Record<string, any>
-}>(), { publishKey: 'status', showSearch: true, allowCreate: true, allowEdit: true, allowDelete: true, panelNote: 'As alterações guardadas aqui são refletidas no site público.', emptyText: 'Adiciona o primeiro registo para começar.', defaultFilters: () => ({}) })
+}>(), { publishKey: 'status', showSearch: true, allowCreate: true, allowEdit: true, allowDelete: true, showPublishAction: true, editActionLabel: 'Editar', panelNote: 'As alterações guardadas aqui são refletidas no site público.', emptyText: 'Adiciona o primeiro registo para começar.', defaultFilters: () => ({}) })
 
 const route=useRoute()
 const router=useRouter()
@@ -69,7 +71,7 @@ const localImagePreviews=ref<Record<string,string>>({})
 
 const visibleColumns=computed(()=>props.columns?.length?props.columns:props.fields.slice(0,4).map(f=>f.key))
 const filterFields=computed(()=>props.fields.filter(f=>f.filterable))
-const isPublishable=computed(()=>props.fields.some(f=>f.key===props.publishKey))
+const isPublishable=computed(()=>props.showPublishAction && props.fields.some(f=>f.key===props.publishKey))
 
 const normalizedOption=(option:SelectOption)=> typeof option==='object' && option!==null && 'value' in option
   ? option
@@ -134,11 +136,14 @@ const paginatedItems=computed(()=>{
 watch([query,filters],()=>{ page.value=1 },{deep:true})
 watch(totalPages,(total)=>{ if(page.value>total) page.value=total })
 
-async function load(){
-  pending.value=true; error.value=''
+async function load({ silent=false }:{ silent?:boolean }={}){
+  if(!silent){ pending.value=true; error.value='' }
   try{ items.value=await props.service.list() }
-  catch(e:any){ const message=e?.data?.message||e?.message||'Erro ao carregar os dados.'; error.value=message; toast.error('Não foi possível carregar', message) }
-  finally{ pending.value=false }
+  catch(e:any){
+    const message=e?.data?.message||e?.message||'Erro ao carregar os dados.'
+    if(!silent){ error.value=message; toast.error('Não foi possível carregar', message) }
+  }
+  finally{ if(!silent) pending.value=false }
 }
 function empty(){
   return Object.fromEntries(props.fields.map(f=>{
@@ -296,8 +301,22 @@ function clearFilters(){
   filters.value=Object.fromEntries(filterFields.value.map(f=>[f.key,'']))
   page.value=1
 }
-onMounted(async()=>{ await load(); if(route.query.new==='1' && canCreate.value) create() })
-onBeforeUnmount(revokeLocalPreviews)
+let syncTimer:ReturnType<typeof setInterval>|undefined
+const syncFromServer=()=>{
+  if(document.visibilityState!=='visible'||pending.value||saving.value||modalOpen.value) return
+  void load({silent:true})
+}
+onMounted(async()=>{
+  await load()
+  if(route.query.new==='1' && canCreate.value) create()
+  syncTimer=setInterval(syncFromServer,5_000)
+  document.addEventListener('visibilitychange',syncFromServer)
+})
+onBeforeUnmount(()=>{
+  if(syncTimer) clearInterval(syncTimer)
+  document.removeEventListener('visibilitychange',syncFromServer)
+  revokeLocalPreviews()
+})
 </script>
 
 <template>
@@ -337,9 +356,9 @@ onBeforeUnmount(revokeLocalPreviews)
               <template v-else>{{display(item,c)}}</template>
             </td>
             <td data-label="Ações"><div class="row-actions">
-              <button v-if="isPublishable && canEdit" class="icon-button icon-button--small" @click="togglePublish(item)" :title="item[publishKey]==='draft'?'Publicar':'Despublicar'"><Icon :name="item[publishKey]==='draft'?'lucide:eye':'lucide:eye-off'"/></button>
-              <button v-if="canEdit" class="icon-button icon-button--small" @click="edit(item)" title="Editar"><Icon name="lucide:pencil"/></button>
-              <button v-if="canDelete" class="icon-button icon-button--small danger" @click="del(item)" title="Eliminar"><Icon name="lucide:trash-2"/></button>
+              <button v-if="isPublishable && canEdit" class="icon-button icon-button--small" @click="togglePublish(item)" :title="item[publishKey]==='draft'?'Publicar':'Despublicar'" :aria-label="item[publishKey]==='draft'?'Publicar':'Despublicar'"><Icon :name="item[publishKey]==='draft'?'lucide:eye':'lucide:eye-off'"/><span class="row-actions__label">{{ item[publishKey]==='draft'?'Publicar':'Despublicar' }}</span></button>
+              <button v-if="canEdit" class="icon-button icon-button--small" @click="edit(item)" :title="editActionLabel" :aria-label="editActionLabel"><Icon name="lucide:pencil"/><span class="row-actions__label">{{ editActionLabel }}</span></button>
+              <button v-if="canDelete" class="icon-button icon-button--small danger" @click="del(item)" title="Eliminar" aria-label="Eliminar"><Icon name="lucide:trash-2"/><span class="row-actions__label">Eliminar</span></button>
             </div></td>
           </tr></tbody>
         </table>

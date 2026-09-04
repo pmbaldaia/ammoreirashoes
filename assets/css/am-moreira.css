@@ -3,6 +3,26 @@
 @media(max-width:600px){.am-wrap{width:min(100% - 32px,1200px)}.am-nav__inner{height:72px}.am-nav__logo{width:136px}.am-mobile-panel{inset-block-start:72px}.am-hero{padding-top:128px;min-height:82svh}.am-section{padding:var(--space-5) 0}.am-section__head{display:block}.am-grid{grid-template-columns:1fr}.am-form{grid-template-columns:1fr}.am-form .full{grid-column:auto}.am-footer__grid{grid-template-columns:1fr}.am-actions .am-btn{width:100%}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important}}
 
+/* O CTA do formulário não pode desaparecer sobre a secção de contacto preta
+   no modo claro. */
+html:not(.dark) .am-contact .am-form .am-btn{
+  background:var(--color-accent);
+  border-color:var(--color-accent);
+  color:#fff!important;
+  box-shadow:0 0 0 1px rgb(255 255 255/.22);
+}
+html:not(.dark) .am-contact .am-form .am-btn:hover:not(:disabled){
+  background:var(--color-accent-light);
+  border-color:var(--color-accent-light);
+  color:#000!important;
+}
+
+/* O último bloco público encosta diretamente ao footer. */
+.am-site{
+  padding-bottom:0!important;
+  margin-bottom:0!important;
+}
+
 /* Design System AM Shoes — consistência, contraste e tema escuro */
 .am-site{min-width:0;overflow-x:clip}
 .am-page-header{padding-top:80px}

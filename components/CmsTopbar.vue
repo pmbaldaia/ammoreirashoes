@@ -3,8 +3,23 @@ defineEmits<{ menu: [] }>()
 
 const menuOpen = ref(false)
 const route = useRoute()
-const { user, logout } = useAuth()
+const { user, logout, authHeaders } = useAuth()
 const toast = useToast()
+const newContacts = ref(0)
+let contactsTimer: ReturnType<typeof setInterval> | undefined
+
+async function refreshNewContacts() {
+  try {
+    const contacts = await $fetch<any[]>('/api/contacts', { headers: authHeaders() })
+    newContacts.value = contacts.filter((contact) => contact.status === 'new').length
+  } catch {}
+}
+onMounted(() => {
+  refreshNewContacts()
+  contactsTimer = setInterval(refreshNewContacts, 5_000)
+})
+onBeforeUnmount(() => contactsTimer && clearInterval(contactsTimer))
+watch(() => route.fullPath, refreshNewContacts)
 
 const roleLabel = computed(() =>
   ({ admin: 'Administrador', viewer: 'Viewer', commercial: 'Comercial' } as Record<string,string>)[user.value?.role || ''] || 'Utilizador'
@@ -87,10 +102,11 @@ function openSite() {
       <NuxtLink
         to="/admin/contactos"
         class="icon-button notification-button"
-        aria-label="Mensagens"
+        :aria-label="newContacts ? `${newContacts} contactos novos` : 'Mensagens'"
         title="Contactos"
       >
         <Icon name="lucide:mail" size="19" />
+        <span v-if="newContacts" class="notification-count">{{ newContacts }}</span>
       </NuxtLink>
 
       <button class="user-menu" type="button" @click="menuOpen = !menuOpen">

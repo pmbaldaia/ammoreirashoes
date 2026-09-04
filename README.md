@@ -23,7 +23,7 @@ Se o teu gestor bloquear scripts de instalação, aprova apenas `esbuild` e `sha
 npm run dev
 ```
 
-O ficheiro `.env` aponta para a base exclusiva `ammoreira`. O backend executa um bootstrap idempotente na primeira ligação: se a base ainda não existir, cria as coleções, índices, dados iniciais e o administrador. `npm run mongo:setup` permite executar antecipadamente o mesmo processo. Para aplicar ao MongoDB atual as alterações aos conteúdos de exemplo incluídos no projeto, usa `npm run mongo:sync`; este comando atualiza apenas os registos institucionais com os IDs do projeto e não elimina os restantes registos criados no CMS.
+O ficheiro `.env` aponta para a base exclusiva `ammoreira`. A aplicação nunca cria nem repõe conteúdo automaticamente em execução. A preparação inicial da base é uma ação explícita através de `npm run mongo:setup`; não executes `npm run mongo:sync` numa base que já esteja a ser gerida pelo CMS, pois esse comando destina-se apenas à sincronização manual de dados de exemplo.
 
 O MongoDB só materializa a base quando é criado o primeiro documento; por isso a criação é feita através dos dados e configurações iniciais da AM Moreira.
 
@@ -62,3 +62,20 @@ Uploads são guardados em MongoDB GridFS e servidos por `/uploads/:id`. Preenche
 Validar 360, 430, 768, 1024, 1440 e 1920 px, incluindo menu, formulários, tabelas/cartões, modais, biblioteca de media e construtor de blocos. Executar `npm run build` antes de publicar.
 
 Consultar `AM_MOREIRA_ARCHITECTURE.md` para a arquitetura e os limites da primeira versão.
+# AM Moreira — Netlify
+
+## Publicação no Netlify
+
+O projeto já está preparado para SSR no Netlify. Mantém o comando de build `npm run build` e a pasta de publicação `dist`; o adaptador Nitro cria automaticamente a função SSR em `.netlify/functions-internal` durante o build.
+
+Antes do primeiro deploy, adiciona estas variáveis em **Site configuration → Environment variables**, tanto em **Production** como em **Deploy Previews** quando aplicável:
+
+| Variável | Obrigatória | Finalidade |
+| --- | --- | --- |
+| `MONGODB_URI` | Sim | Ligação ao MongoDB Atlas. O cluster tem de aceitar ligações provenientes do Netlify. |
+| `MONGODB_DB` | Sim | Base de dados, normalmente `ammoreira`. |
+| `NUXT_SITE_URL` | Sim | URL pública final, sem `/` no fim. É usada no link de recuperação. |
+| `RESEND_API_KEY` | Sim | Chave da API Resend para envio dos e-mails de recuperação. |
+| `RESEND_FROM` | Sim | Remetente num domínio verificado no Resend, por exemplo `AM Moreira <no-reply@dominio.pt>`. |
+
+Sem estas variáveis, a API não consegue consultar o CMS/MongoDB e o envio de recuperação de palavra-passe não pode ser concluído.

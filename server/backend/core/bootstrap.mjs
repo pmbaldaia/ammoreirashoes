@@ -15,6 +15,16 @@ const indexSpecs = {
 }
 
 export async function ensureAmMoreiraDatabase(db) {
+  // The complete seed/migration routine performs many writes. In a serverless
+  // environment it used to run again on every cold start, making login and
+  // password recovery wait tens of seconds even though the database was
+  // already configured. An existing CMS user is enough to identify a live,
+  // previously initialised database; only a genuinely empty installation
+  // needs the full bootstrap.
+  const usersCollection = db.collection('users')
+  const existingUser = await usersCollection.findOne({}, { projection: { _id: 1 } })
+  if (existingUser) return
+
   for (const [name, rows] of Object.entries(seedData)) {
     const collection = db.collection(name)
     await collection.createIndex({ id: 1 }, { unique: true, sparse: true })
@@ -28,7 +38,7 @@ export async function ensureAmMoreiraDatabase(db) {
   }
 
   // Migra contas antigas (email) para username sem impedir o login após a atualização.
-  const users = db.collection('users')
+  const users = usersCollection
   for (const user of await users.find({ username: { $exists: false } }).toArray()) {
     const base = String(user.email || user.id || 'utilizador').split('@')[0].toLowerCase().replace(/[^a-z0-9._-]/g, '-').replace(/^[^a-z0-9]+/, '').slice(0, 24) || 'utilizador'
     let username = base.length >= 3 ? base : `user-${String(user.id).slice(0, 8)}`

@@ -1,10 +1,11 @@
 import crypto from 'node:crypto'
 import { usersRepository } from '../users/users.repository.mjs'
-import { hashPassword } from '../../core/auth.mjs'
+import { hashPassword, verifyPassword } from '../../core/auth.mjs'
 import { getMongoDb } from '../../core/mongo.mjs'
 
 const tokenHash = (token) => crypto.createHmac('sha256', process.env.AUTH_SECRET || 'am-moreira-dev-change-this-secret').update(String(token)).digest('hex')
 const emailPattern = /^\S+@\S+\.\S+$/
+const resetTtlMs = 15 * 60 * 1000
 
 async function resetCollection() {
   const db = await getMongoDb()
@@ -30,7 +31,7 @@ export const passwordResetService = {
     await resets.insertOne({
       userId: user.id,
       tokenHash: tokenHash(token),
-      expiresAt: new Date(Date.now() + 60 * 60 * 1000),
+      expiresAt: new Date(Date.now() + resetTtlMs),
       createdAt: new Date(),
     })
     return { token, user }
@@ -63,7 +64,15 @@ export const passwordResetService = {
     }
     const user = await usersRepository.findById(resetData.userId)
     if (!user || !user.active) { const error = new Error('Este link é inválido ou já expirou. Pede uma nova recuperação de palavra-passe.'); error.statusCode = 400; throw error }
-    await usersRepository.update(user.id, { passwordHash: hashPassword(password) })
-    return user
+    // Persist the new hash in MongoDB before reporting success. Returning the
+    // updated record also makes this path independent from the stale user
+    // object that was loaded before the reset token was consumed.
+    const updatedUser = await usersRepository.update(user.id, { passwordHash: hashPassword(password) })
+    if (!updatedUser || !verifyPassword(password, updatedUser.passwordHash)) {
+      const error = new Error('Não foi possível atualizar a palavra-passe. Tenta novamente.')
+      error.statusCode = 500
+      throw error
+    }
+    return updatedUser
   },
 }

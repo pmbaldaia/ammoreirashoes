@@ -30,7 +30,8 @@ try {
       updateOne: {
         filter: { id: String(row.id) },
         update: { $set: { ...row, updatedAt: new Date().toISOString() }, $setOnInsert: { createdAt: new Date().toISOString() } },
-        upsert: true,
+        // Never recreate content that was intentionally deleted in the CMS.
+        upsert: false,
       },
     })))
     const count = result.matchedCount + result.upsertedCount

@@ -28,7 +28,7 @@ export async function sendPasswordResetEmail({ user, token }) {
         from,
         to: [user.email],
         subject: 'Recuperação de palavra-passe — AM Moreira',
-        html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#161616;max-width:560px;margin:auto"><h1 style="margin-bottom:8px">Recuperar palavra-passe</h1><p>Olá, ${name}.</p><p>Recebemos um pedido para redefinir a palavra-passe da tua conta AM Moreira.</p><p style="margin:28px 0"><a href="${link}" style="display:inline-block;background:#000;color:#fff;padding:13px 22px;text-decoration:none;border-radius:4px;font-weight:700">Redefinir palavra-passe</a></p><p>Este link é válido durante 1 hora e só pode ser utilizado uma vez.</p><p>Se não fizeste este pedido, podes ignorar este email.</p></div>`,
+        html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#161616;max-width:560px;margin:auto"><h1 style="margin-bottom:8px">Recuperar palavra-passe</h1><p>Olá, ${name}.</p><p>Recebemos um pedido para redefinir a palavra-passe da tua conta AM Moreira.</p><p style="margin:28px 0"><a href="${link}" style="display:inline-block;background:#000;color:#fff;padding:13px 22px;text-decoration:none;border-radius:4px;font-weight:700">Redefinir palavra-passe</a></p><p>Este link é válido durante 15 minutos e só pode ser utilizado uma vez.</p><p>Se não fizeste este pedido, podes ignorar este email.</p></div>`,
       }),
     })
   } finally { clearTimeout(timeout) }

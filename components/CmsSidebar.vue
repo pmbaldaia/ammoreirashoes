@@ -4,6 +4,25 @@ defineEmits<{ close: [] }>();
 const route = useRoute();
 const { groups } = useCmsNavigation();
 const { isDark } = useThemeMode();
+const { authHeaders } = useAuth();
+const newContacts = ref(0);
+let contactsTimer: ReturnType<typeof setInterval> | undefined;
+
+const badgeFor = (to: string) => to === '/admin/contactos' && newContacts.value > 0 ? newContacts.value : null;
+async function refreshNewContacts() {
+  try {
+    const contacts = await $fetch<any[]>('/api/contacts', { headers: authHeaders() });
+    newContacts.value = contacts.filter((contact) => contact.status === 'new').length;
+  } catch {
+    // A badge must never block the CMS navigation when the request fails.
+  }
+}
+onMounted(() => {
+  refreshNewContacts();
+  contactsTimer = setInterval(refreshNewContacts, 5_000);
+});
+onBeforeUnmount(() => contactsTimer && clearInterval(contactsTimer));
+watch(() => route.fullPath, refreshNewContacts);
 </script>
 <template>
   <button
@@ -33,7 +52,7 @@ const { isDark } = useThemeMode();
           @click="$emit('close')"
           ><Icon :name="item.icon" size="18" /><span class="nav-item__label">{{
             item.label
-          }}</span></NuxtLink
+          }}</span><span v-if="badgeFor(item.to)" class="nav-item__badge" :aria-label="`${badgeFor(item.to)} contactos novos`">{{ badgeFor(item.to) }}</span></NuxtLink
         >
       </section>
     </nav>

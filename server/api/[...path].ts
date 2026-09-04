@@ -25,7 +25,13 @@ export default defineEventHandler(async(event)=>{
     const ip=getRequestIP(event,{xForwardedFor:true})||'unknown', now=Date.now();if((passwordResetHits.get(ip)||0)>now)fail(429,'Aguarda um minuto antes de pedir outro email.')
     passwordResetHits.set(ip,now+60_000)
     const {email}=await readBody(event);const result=await passwordResetService.create(email)
-    if(result){const delivery=sendPasswordResetEmail(result).catch((error)=>console.error('[password-reset] email delivery failed',error?.message||error));if(typeof event.waitUntil==='function')event.waitUntil(delivery);else void delivery}
+    // Create the token in MongoDB first, then delegate email delivery to
+    // Nitro/Netlify's background lifecycle. The browser can respond straight
+    // away instead of waiting for the Resend network round-trip.
+    if(result){
+      const delivery=sendPasswordResetEmail(result).catch((error)=>console.error('[password-reset] email delivery failed',error?.message||error))
+      event.waitUntil(delivery)
+    }
     setResponseStatus(event,202);return {ok:true,message:'Se existir uma conta associada a este email, receberás um link de recuperação.'}
   }
   if(path[0]==='auth'&&path[1]==='reset-password'&&method==='POST'){
