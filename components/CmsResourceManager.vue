@@ -6,7 +6,7 @@ interface Field {
   key: string
   label: string
   tableLabel?: string
-  type?: 'text'|'date'|'time'|'datetime-local'|'textarea'|'number'|'select'|'array'|'image'|'image-multi'|'email'|'password'
+  type?: 'text'|'date'|'time'|'datetime-local'|'textarea'|'number'|'select'|'array'|'buttons'|'image'|'image-multi'|'email'|'password'
   options?: SelectOption[]
   placeholder?: string
   required?: boolean
@@ -38,7 +38,8 @@ const props=withDefaults(defineProps<{
   panelNote?: string
   emptyText?: string
   defaultFilters?: Record<string, any>
-}>(), { publishKey: 'status', showSearch: true, allowCreate: true, allowEdit: true, allowDelete: true, showPublishAction: true, editActionLabel: 'Editar', panelNote: 'As alterações guardadas ficam disponíveis automaticamente onde este conteúdo é utilizado.', emptyText: 'Ainda não existe conteúdo. Adiciona o primeiro item para começar.', defaultFilters: () => ({}) })
+  inlineEditor?: boolean
+}>(), { publishKey: 'status', showSearch: true, allowCreate: true, allowEdit: true, allowDelete: true, showPublishAction: true, editActionLabel: 'Editar', panelNote: 'As alterações guardadas ficam disponíveis automaticamente onde este conteúdo é utilizado.', emptyText: 'Ainda não existe conteúdo. Adiciona o primeiro item para começar.', defaultFilters: () => ({}), inlineEditor: false })
 
 const route=useRoute()
 const router=useRouter()
@@ -158,7 +159,7 @@ function empty(){
       return [f.key,max+1]
     }
     if(f.defaultValue!==undefined) return [f.key,typeof f.defaultValue==='function'?f.defaultValue():f.defaultValue]
-    return [f.key,['array','image-multi'].includes(f.type||'')?[]:'']
+    return [f.key,['array','buttons','image-multi'].includes(f.type||'')?[]:'']
   }))
 }
 function create(){
@@ -192,7 +193,7 @@ function validate(payload:any){
   for(const f of props.fields){
     if(f.required===false) continue
     if(['text','email','password','date','time','datetime-local','select'].includes(f.type||'text') && !String(payload[f.key]??'').trim()) return `Preenche o campo “${f.label}”.`
-    if(['array','image-multi'].includes(f.type||'') && (!Array.isArray(payload[f.key]) || !payload[f.key].filter(Boolean).length)) return `Preenche o campo “${f.label}”.`
+    if(['array','buttons','image-multi'].includes(f.type||'') && (!Array.isArray(payload[f.key]) || !payload[f.key].filter(Boolean).length)) return `Preenche o campo “${f.label}”.`
   }
   return ''
 }
@@ -302,6 +303,44 @@ function clearImage(field:Field){
   delete localImagePreviews.value[field.key]
   if(editing.value) editing.value[field.key]=''
 }
+type CmsButtonStyle = 'primary' | 'secondary'
+const buttonFromRaw=(raw:any,index=0)=>{
+  const parts=String(raw??'').split('|')
+  const label=parts[0]||''
+  const url=parts[1]||''
+  const rawStyle=parts[2]
+  const style: CmsButtonStyle = rawStyle==='secondary' || rawStyle==='primary'
+    ? rawStyle
+    : index===0 ? 'primary' : 'secondary'
+  return { label, url, style }
+}
+const encodeButton=(button:{label?:string;url?:string;style?:CmsButtonStyle})=>
+  `${button.label||''}|${button.url||''}|${button.style||'primary'}`
+function buttonPart(fieldKey:string,index:number,key:'label'|'url'|'style'){
+  if(!editing.value) return ''
+  return buttonFromRaw(editing.value[fieldKey]?.[index],index)[key]
+}
+function updateButton(fieldKey:string,index:number,key:'label'|'url'|'style',value:string){
+  if(!editing.value) return
+  const list=Array.isArray(editing.value[fieldKey])?[...editing.value[fieldKey]]:[]
+  const current=buttonFromRaw(list[index],index)
+  ;(current as any)[key]=value
+  list[index]=encodeButton(current)
+  editing.value[fieldKey]=list
+}
+function addButton(fieldKey:string){
+  if(!editing.value) return
+  const list=Array.isArray(editing.value[fieldKey])?[...editing.value[fieldKey]]:[]
+  const style: CmsButtonStyle=list.length===0?'primary':'secondary'
+  list.push(encodeButton({label:'',url:'',style}))
+  editing.value[fieldKey]=list
+}
+function removeButton(fieldKey:string,index:number){
+  if(!editing.value) return
+  const list=Array.isArray(editing.value[fieldKey])?[...editing.value[fieldKey]]:[]
+  list.splice(index,1)
+  editing.value[fieldKey]=list
+}
 function clearFilters(){
   query.value=''
   filters.value=Object.fromEntries(filterFields.value.map(f=>[f.key,'']))
@@ -329,12 +368,12 @@ onBeforeUnmount(()=>{
   <div class="page-stack">
     <header class="page-heading">
       <div><p class="eyebrow">Área de gestão</p><h1>{{title}}</h1><p class="page-heading__description">{{description}}</p></div>
-      <div v-if="canCreate" class="page-heading__actions"><button class="btn btn--primary" @click="create"><Icon name="lucide:plus"/> Adicionar novo</button></div>
+      <div v-if="canCreate && (!inlineEditor || !modalOpen)" class="page-heading__actions"><button class="btn btn--primary" @click="create"><Icon name="lucide:plus"/> Adicionar novo</button></div>
     </header>
 
     <p v-if="error" class="cms-alert cms-alert--danger">{{error}}</p>
 
-    <section class="panel content-panel">
+    <section v-if="!inlineEditor || !modalOpen" class="panel content-panel">
       <div class="panel__header content-panel__header">
         <div><h2>{{filteredItems.length}} de {{items.length}} itens</h2><p>{{ panelNote }}</p></div>
         <div class="resource-tools">
@@ -378,52 +417,71 @@ onBeforeUnmount(()=>{
       />
     </section>
 
-    <div v-if="modalOpen" class="modal-backdrop" @click.self="close">
-      <form v-if="editing" class="cms-modal" @submit.prevent="submit">
-        <header><div><p class="eyebrow">{{editingId!==null?'Editar conteúdo':'Adicionar conteúdo'}}</p><h2>{{title}}</h2></div><button type="button" class="icon-button" @click="close"><Icon name="lucide:x"/></button></header>
-        <div class="form-grid">
-          <label v-for="field in fields" :key="field.key" class="form-field" :class="{'form-field--wide':['textarea','array','image','image-multi'].includes(field.type||'')}">
+    <section v-if="modalOpen && inlineEditor && editing" class="panel resource-inline-editor" aria-live="polite">
+      <form class="resource-inline-editor__form" @submit.prevent="submit">
+        <header class="resource-inline-editor__header">
+          <div>
+            <p class="eyebrow">{{editingId!==null?'Editar conteúdo':'Adicionar conteúdo'}}</p>
+            <h2>{{title}}</h2>
+            <p>Preenche os campos abaixo. As alterações só ficam disponíveis depois de guardares.</p>
+          </div>
+          <button type="button" class="btn btn--secondary" @click="close"><Icon name="lucide:arrow-left"/> Voltar à lista</button>
+        </header>
+        <div class="form-grid resource-inline-editor__grid">
+          <label v-for="field in fields" :key="field.key" class="form-field" :class="{'form-field--wide':['textarea','array','buttons','image','image-multi'].includes(field.type||'')}">
             <span>{{field.label}}</span>
             <textarea v-if="field.type==='textarea'" v-model="editing[field.key]" rows="5" :placeholder="field.placeholder" :readonly="field.readonly"/>
             <textarea v-else-if="field.type==='array'" :value="Array.isArray(editing[field.key])?editing[field.key].join('\n'):editing[field.key]" rows="5" placeholder="Um item por linha" @input="arrayInput(field.key,$event)"/>
+            <div v-else-if="field.type==='buttons'" class="cms-buttons-editor">
+              <div v-if="!editing[field.key]?.length" class="cms-buttons-editor__empty">Ainda não existem botões neste bloco.</div>
+              <article v-for="(_raw,index) in editing[field.key]" :key="`${field.key}-${index}`" class="cms-button-row">
+                <div class="cms-button-row__heading"><strong>Botão {{ index + 1 }}</strong><button type="button" class="text-button danger" @click="removeButton(field.key,index)"><Icon name="lucide:trash-2"/> Remover</button></div>
+                <div class="cms-button-row__fields">
+                  <label><span>Texto do botão</span><input :value="buttonPart(field.key,index,'label')" type="text" placeholder="Ex.: Saber mais" @input="updateButton(field.key,index,'label',($event.target as HTMLInputElement).value)"></label>
+                  <label><span>Destino</span><input :value="buttonPart(field.key,index,'url')" type="text" placeholder="Ex.: /contacto" @input="updateButton(field.key,index,'url',($event.target as HTMLInputElement).value)"></label>
+                  <label><span>Estilo</span><select :value="buttonPart(field.key,index,'style')" @change="updateButton(field.key,index,'style',($event.target as HTMLSelectElement).value)"><option value="primary">Primário</option><option value="secondary">Secundário</option></select></label>
+                </div>
+              </article>
+              <button type="button" class="btn btn--secondary cms-buttons-editor__add" @click="addButton(field.key)"><Icon name="lucide:plus"/> Adicionar botão</button>
+              <small class="form-field__hint">O primeiro botão é criado como Primário. A partir do segundo, o estilo predefinido é Secundário para manter a hierarquia visual.</small>
+            </div>
             <select v-else-if="field.type==='select'" v-model="editing[field.key]" :disabled="field.readonly"><option value="">Seleciona uma opção</option><option v-for="option in field.options" :key="String(normalizedOption(option).value)" :value="normalizedOption(option).value">{{normalizedOption(option).label}}</option></select>
-            <CmsDateTimePicker
-              v-else-if="['date','time','datetime-local'].includes(field.type||'')"
-              v-model="editing[field.key]"
-              :type="field.type as 'date'|'time'|'datetime-local'"
-              :required="field.required!==false"
-              :readonly="field.readonly"
-              :placeholder="field.placeholder"
-            />
-            <CmsGalleryImagePicker
-              v-else-if="field.type==='image-multi'"
-              v-model="editing[field.key]"
-            />
+            <CmsDateTimePicker v-else-if="['date','time','datetime-local'].includes(field.type||'')" v-model="editing[field.key]" :type="field.type as 'date'|'time'|'datetime-local'" :required="field.required!==false" :readonly="field.readonly" :placeholder="field.placeholder" />
+            <CmsGalleryImagePicker v-else-if="field.type==='image-multi'" v-model="editing[field.key]" />
             <template v-else-if="field.type==='image'">
               <div class="image-field">
-                <div v-if="imagePreviewFor(field)" class="image-preview-card">
-                  <img :src="imagePreviewFor(field)" :alt="`Pré-visualização de ${field.label}`" class="image-preview">
-                  <div class="image-preview-card__meta">
-                    <span>{{ localImagePreviews[field.key] ? 'Nova imagem selecionada' : 'Imagem atual' }}</span>
-                    <a v-if="editing[field.key] && !localImagePreviews[field.key]" :href="editing[field.key]" target="_blank" rel="noopener">Abrir imagem</a>
-                  </div>
-                </div>
-                <div v-else class="image-preview-empty">
-                  <Icon name="lucide:image" size="28"/>
-                  <span>Ainda não existe imagem.</span>
-                </div>
+                <div v-if="imagePreviewFor(field)" class="image-preview-card"><img :src="imagePreviewFor(field)" :alt="`Pré-visualização de ${field.label}`" class="image-preview"><div class="image-preview-card__meta"><span>{{ localImagePreviews[field.key] ? 'Nova imagem selecionada' : 'Imagem atual' }}</span><a v-if="editing[field.key] && !localImagePreviews[field.key]" :href="editing[field.key]" target="_blank" rel="noopener">Abrir imagem</a></div></div>
+                <div v-else class="image-preview-empty"><Icon name="lucide:image" size="28"/><span>Ainda não existe imagem.</span></div>
                 <input v-model="editing[field.key]" type="text" :placeholder="field.placeholder||'Endereço da imagem ou caminho do ficheiro'">
-                <label class="image-upload-button" :class="{'is-loading':uploadBusy[field.key]}">
-                  <Icon :name="uploadBusy[field.key]?'lucide:loader-circle':'lucide:upload'" />
-                  {{ uploadBusy[field.key] ? 'A carregar…' : imagePreviewFor(field) ? 'Substituir imagem' : 'Carregar imagem' }}
-                  <input type="file" accept="image/*" hidden :disabled="uploadBusy[field.key]" @change="uploadImage(field,$event)">
-                </label>
-                <button v-if="imagePreviewFor(field)" type="button" class="btn btn--ghost image-remove-button" :disabled="uploadBusy[field.key]" @click="clearImage(field)">
-                  <Icon name="lucide:x"/> Remover imagem
-                </button>
+                <label class="image-upload-button" :class="{'is-loading':uploadBusy[field.key]}"><Icon :name="uploadBusy[field.key]?'lucide:loader-circle':'lucide:upload'" />{{ uploadBusy[field.key] ? 'A carregar…' : imagePreviewFor(field) ? 'Substituir imagem' : 'Carregar imagem' }}<input type="file" accept="image/*" hidden :disabled="uploadBusy[field.key]" @change="uploadImage(field,$event)"></label>
+                <button v-if="imagePreviewFor(field)" type="button" class="btn btn--ghost image-remove-button" :disabled="uploadBusy[field.key]" @click="clearImage(field)"><Icon name="lucide:x"/> Remover imagem</button>
                 <small class="form-field__hint">A pré-visualização é atualizada assim que selecionas o ficheiro. O endereço final da imagem é guardado depois de guardares as alterações.</small>
               </div>
             </template>
+            <input v-else v-model="editing[field.key]" :type="field.type||'text'" :placeholder="field.placeholder" :required="field.required!==false" :readonly="field.readonly"/>
+            <small v-if="field.hint" class="form-field__hint">{{field.hint}}</small>
+          </label>
+        </div>
+        <footer class="resource-inline-editor__footer"><button type="button" class="btn btn--secondary" @click="close">Cancelar</button><button class="btn btn--primary" :disabled="saving">{{saving?'A guardar…':editingId!==null?'Guardar alterações':'Adicionar conteúdo'}}</button></footer>
+      </form>
+    </section>
+
+    <div v-else-if="modalOpen" class="modal-backdrop" @click.self="close">
+      <form v-if="editing" class="cms-modal" @submit.prevent="submit">
+        <header><div><p class="eyebrow">{{editingId!==null?'Editar conteúdo':'Adicionar conteúdo'}}</p><h2>{{title}}</h2></div><button type="button" class="icon-button" @click="close"><Icon name="lucide:x"/></button></header>
+        <div class="form-grid">
+          <label v-for="field in fields" :key="field.key" class="form-field" :class="{'form-field--wide':['textarea','array','buttons','image','image-multi'].includes(field.type||'')}">
+            <span>{{field.label}}</span>
+            <textarea v-if="field.type==='textarea'" v-model="editing[field.key]" rows="5" :placeholder="field.placeholder" :readonly="field.readonly"/>
+            <textarea v-else-if="field.type==='array'" :value="Array.isArray(editing[field.key])?editing[field.key].join('\n'):editing[field.key]" rows="5" placeholder="Um item por linha" @input="arrayInput(field.key,$event)"/>
+            <div v-else-if="field.type==='buttons'" class="cms-buttons-editor">
+              <article v-for="(_raw,index) in editing[field.key]" :key="`${field.key}-${index}`" class="cms-button-row"><div class="cms-button-row__heading"><strong>Botão {{ index + 1 }}</strong><button type="button" class="text-button danger" @click="removeButton(field.key,index)">Remover</button></div><div class="cms-button-row__fields"><label><span>Texto</span><input :value="buttonPart(field.key,index,'label')" @input="updateButton(field.key,index,'label',($event.target as HTMLInputElement).value)"></label><label><span>Destino</span><input :value="buttonPart(field.key,index,'url')" @input="updateButton(field.key,index,'url',($event.target as HTMLInputElement).value)"></label><label><span>Estilo</span><select :value="buttonPart(field.key,index,'style')" @change="updateButton(field.key,index,'style',($event.target as HTMLSelectElement).value)"><option value="primary">Primário</option><option value="secondary">Secundário</option></select></label></div></article>
+              <button type="button" class="btn btn--secondary" @click="addButton(field.key)">Adicionar botão</button>
+            </div>
+            <select v-else-if="field.type==='select'" v-model="editing[field.key]" :disabled="field.readonly"><option value="">Seleciona uma opção</option><option v-for="option in field.options" :key="String(normalizedOption(option).value)" :value="normalizedOption(option).value">{{normalizedOption(option).label}}</option></select>
+            <CmsDateTimePicker v-else-if="['date','time','datetime-local'].includes(field.type||'')" v-model="editing[field.key]" :type="field.type as 'date'|'time'|'datetime-local'" :required="field.required!==false" :readonly="field.readonly" :placeholder="field.placeholder" />
+            <CmsGalleryImagePicker v-else-if="field.type==='image-multi'" v-model="editing[field.key]" />
+            <template v-else-if="field.type==='image'"><div class="image-field"><div v-if="imagePreviewFor(field)" class="image-preview-card"><img :src="imagePreviewFor(field)" :alt="`Pré-visualização de ${field.label}`" class="image-preview"></div><input v-model="editing[field.key]" type="text" :placeholder="field.placeholder||'Endereço da imagem ou caminho do ficheiro'"></div></template>
             <input v-else v-model="editing[field.key]" :type="field.type||'text'" :placeholder="field.placeholder" :required="field.required!==false" :readonly="field.readonly"/>
             <small v-if="field.hint" class="form-field__hint">{{field.hint}}</small>
           </label>

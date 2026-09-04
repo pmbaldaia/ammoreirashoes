@@ -12,6 +12,7 @@ const sidebarOpen = ref(false)
     <div class="cms-shell__main">
       <CmsTopbar @menu="sidebarOpen = !sidebarOpen" />
       <main class="cms-content">
+        <CmsBreadcrumb />
         <slot />
       </main>
     </div>

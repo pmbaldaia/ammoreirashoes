@@ -18,10 +18,18 @@ const featuredEvents = computed(() => {
   const featured = events.value.filter((item: any) => item.featured).slice(0, 3)
   return featured.length ? featured : events.value.slice(0, 3)
 })
-const action = (value: string) => {
-  const [label, url] = String(value).split('|')
-  return { label, url: url || '#' }
+const action = (value: string, index = 0) => {
+  const [label, url, rawStyle] = String(value).split('|')
+  const style = rawStyle === 'primary' || rawStyle === 'secondary'
+    ? rawStyle
+    : index === 0 ? 'primary' : 'secondary'
+  return { label, url: url || '#', style }
 }
+const actionClass = (value: string, index = 0) => [
+  'am-btn',
+  action(value, index).style === 'secondary' ? 'am-btn--secondary' : 'am-btn--primary',
+]
+
 
 useHead(() => ({
   title: page.value?.seoTitle || page.value?.title || 'AM Moreira',
@@ -38,7 +46,7 @@ useHead(() => ({
     <template v-for="block in visibleBlocks" :key="block.id">
       <section v-if="block.type === 'hero'" class="am-hero" :style="block.image ? { backgroundImage: `linear-gradient(90deg,rgba(15,13,11,.88),rgba(15,13,11,.18)),url('${block.image}')` } : {}">
         <div class="am-wrap am-hero__layout">
-          <div class="am-hero__content"><p class="am-kicker">{{ block.eyebrow }}</p><h1>{{ block.title }}</h1><p>{{ block.content }}</p><div v-if="block.items?.length" class="am-actions"><NuxtLink v-for="(raw, index) in block.items" :key="raw" :class="['am-btn', { 'am-btn--light': index > 0 }]" :to="action(raw).url">{{ action(raw).label }}</NuxtLink></div></div>
+          <div class="am-hero__content"><p class="am-kicker">{{ block.eyebrow }}</p><h1>{{ block.title }}</h1><p>{{ block.content }}</p><div v-if="block.items?.length" class="am-actions"><NuxtLink v-for="(raw, index) in block.items" :key="raw" :class="actionClass(raw,index)" :to="action(raw,index).url">{{ action(raw,index).label }}</NuxtLink></div></div>
         </div>
       </section>
       <PublicPageHeader v-else-if="block.type === 'page-header'" :kicker="block.eyebrow || ''" :title="block.title || ''" :description="block.content || ''" />
@@ -46,7 +54,7 @@ useHead(() => ({
       <section v-else-if="block.type === 'products'" class="am-section am-section--sand"><div class="am-wrap"><div class="am-section__head"><div><p class="am-kicker">{{ block.eyebrow }}</p><h2>{{ block.title }}</h2></div><p>{{ block.content }}</p></div><div v-if="featuredProducts.length" class="am-grid"><article v-for="item in featuredProducts" :key="item.id" class="am-card"><div class="am-card__image"><img :src="item.image" :alt="item.name" loading="lazy"></div><div class="am-card__body"><h3>{{ item.name }}</h3><p>{{ item.description }}</p></div></article></div></div></section>
       <section v-else-if="block.type === 'events'" class="am-section"><div class="am-wrap"><div class="am-section__head"><div><p class="am-kicker">{{ block.eyebrow }}</p><h2>{{ block.title }}</h2></div><p>{{ block.content }}</p></div><div v-if="featuredEvents.length" class="am-grid"><article v-for="item in featuredEvents" :key="item.id" class="am-card"><div class="am-card__body"><p class="am-kicker">{{ item.city }}<template v-if="item.fairDays?.length"> · Dias {{ item.fairDays.join(', ').replace(/, ([^,]*)$/, ' e $1') }}</template><template v-else-if="item.startDate"> · {{ item.startDate }}</template></p><h3>{{ item.name }}</h3><p>{{ item.description }}</p></div></article></div></div></section>
       <section v-else-if="block.type === 'form'" class="am-section am-contact"><div class="am-wrap am-contact__grid"><div><p class="am-kicker">{{ block.eyebrow }}</p><h2>{{ block.title }}</h2><p>{{ block.content }}</p></div><ContactForm /></div></section>
-      <section v-else-if="block.type === 'cta'" class="am-section am-section--sand"><div class="am-wrap"><p class="am-kicker">{{ block.eyebrow }}</p><h2>{{ block.title }}</h2><p>{{ block.content }}</p><NuxtLink v-if="block.items?.[0]" class="am-btn" :to="action(block.items[0]).url" style="margin-top:24px">{{ action(block.items[0]).label }}</NuxtLink></div></section>
+      <section v-else-if="block.type === 'cta'" class="am-section am-section--sand"><div class="am-wrap"><p class="am-kicker">{{ block.eyebrow }}</p><h2>{{ block.title }}</h2><p>{{ block.content }}</p><div v-if="block.items?.length" class="am-actions" style="margin-top:24px"><NuxtLink v-for="(raw,index) in block.items" :key="`${block.id}-${index}-${raw}`" :class="actionClass(raw,index)" :to="action(raw,index).url">{{ action(raw,index).label }}</NuxtLink></div></div></section>
     </template>
     <section v-if="!visibleBlocks.length" class="am-section am-empty-section"><div class="am-wrap am-empty">Esta página ainda não tem blocos publicados.</div></section>
   </div>

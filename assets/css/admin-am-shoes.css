@@ -523,3 +523,208 @@ html.dark .status-badge--info {
   color: #cbd5e1 !important;
   border-color: #475569 !important;
 }
+
+/* =========================================================
+   AUTENTICAÇÃO — PRIMARY DA MARCA
+   Login, recuperação e redefinição usam sempre o vermelho
+   como cor principal, em light e dark mode.
+   ========================================================= */
+.auth-shell {
+  --auth-primary: var(--color-accent);
+  --auth-primary-hover: #9d0a18;
+  --auth-primary-active: var(--color-accent-dark);
+  --auth-focus-ring: rgb(122 5 16 / .22);
+}
+
+/* Botão principal: nunca preto/verde no login. */
+.auth-shell .auth-card .btn--primary,
+html.dark .auth-shell .auth-card .btn--primary {
+  background: var(--auth-primary) !important;
+  border-color: var(--auth-primary) !important;
+  color: #fff !important;
+  box-shadow: 0 8px 22px rgb(122 5 16 / .18) !important;
+}
+.auth-shell .auth-card .btn--primary:hover:not(:disabled),
+html.dark .auth-shell .auth-card .btn--primary:hover:not(:disabled) {
+  background: var(--auth-primary-hover) !important;
+  border-color: var(--auth-primary-hover) !important;
+  color: #fff !important;
+  box-shadow: 0 10px 26px rgb(122 5 16 / .24) !important;
+}
+.auth-shell .auth-card .btn--primary:active:not(:disabled),
+html.dark .auth-shell .auth-card .btn--primary:active:not(:disabled) {
+  background: var(--auth-primary-active) !important;
+  border-color: var(--auth-primary-active) !important;
+}
+.auth-shell .auth-card .btn--primary:focus-visible,
+html.dark .auth-shell .auth-card .btn--primary:focus-visible {
+  outline: 3px solid var(--color-accent-light) !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 5px var(--auth-focus-ring) !important;
+}
+.auth-shell .auth-card .btn--primary:disabled,
+html.dark .auth-shell .auth-card .btn--primary:disabled {
+  background: color-mix(in srgb, var(--auth-primary) 48%, var(--ui-disabled-bg)) !important;
+  border-color: color-mix(in srgb, var(--auth-primary) 42%, var(--ui-disabled-bg)) !important;
+  color: rgb(255 255 255 / .72) !important;
+  box-shadow: none !important;
+}
+
+/* Campos: hover e focus passam a usar a cor da marca. */
+.auth-shell .auth-card .form-field input:hover,
+.auth-shell .auth-card .form-field select:hover,
+.auth-shell .auth-card .form-field textarea:hover,
+html.dark .auth-shell .auth-card .form-field input:hover,
+html.dark .auth-shell .auth-card .form-field select:hover,
+html.dark .auth-shell .auth-card .form-field textarea:hover {
+  border-color: var(--color-accent-light) !important;
+}
+.auth-shell .auth-card .form-field input:focus,
+.auth-shell .auth-card .form-field input:focus-visible,
+.auth-shell .auth-card .form-field select:focus,
+.auth-shell .auth-card .form-field select:focus-visible,
+.auth-shell .auth-card .form-field textarea:focus,
+.auth-shell .auth-card .form-field textarea:focus-visible,
+html.dark .auth-shell .auth-card .form-field input:focus,
+html.dark .auth-shell .auth-card .form-field input:focus-visible,
+html.dark .auth-shell .auth-card .form-field select:focus,
+html.dark .auth-shell .auth-card .form-field select:focus-visible,
+html.dark .auth-shell .auth-card .form-field textarea:focus,
+html.dark .auth-shell .auth-card .form-field textarea:focus-visible {
+  border-color: var(--auth-primary) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 3px var(--auth-focus-ring) !important;
+}
+
+/* Autofill mantém o focus da marca. */
+.auth-shell .auth-card .form-field input:-webkit-autofill:focus,
+html.dark .auth-shell .auth-card .form-field input:-webkit-autofill:focus {
+  border-color: var(--auth-primary) !important;
+}
+
+/* Eyebrow, links e controlos auxiliares também seguem o Primary. */
+.auth-shell .auth-card .eyebrow,
+html.dark .auth-shell .auth-card .eyebrow {
+  color: var(--auth-primary) !important;
+}
+html.dark .auth-shell .auth-card .eyebrow {
+  color: var(--color-accent-light) !important;
+}
+.auth-shell .auth-recovery-link {
+  color: var(--auth-primary) !important;
+}
+.auth-shell .auth-recovery-link:hover,
+.auth-shell .auth-recovery-link:focus-visible {
+  color: var(--auth-primary-hover) !important;
+  text-decoration-color: currentColor !important;
+}
+.auth-shell .auth-theme-toggle .theme-toggle:hover,
+.auth-shell .auth-theme-toggle .theme-toggle:focus-visible,
+html.dark .auth-shell .auth-theme-toggle .theme-toggle:hover,
+html.dark .auth-shell .auth-theme-toggle .theme-toggle:focus-visible {
+  border-color: var(--auth-primary) !important;
+  color: var(--auth-primary) !important;
+  box-shadow: 0 0 0 3px var(--auth-focus-ring) !important;
+}
+
+/* Dark mode: remover a antiga atmosfera verde do ecrã de autenticação. */
+html.dark .auth-shell {
+  background:
+    radial-gradient(circle at 50% -15%, rgb(122 5 16 / .16), transparent 38%),
+    linear-gradient(180deg, #0d0a0b 0%, #080708 100%) !important;
+}
+html.dark .auth-card {
+  background: #181416 !important;
+  border-color: #49363a !important;
+  color: #fff !important;
+}
+html.dark .auth-card > p:not(.eyebrow) {
+  color: #d0c5c8 !important;
+}
+html.dark .auth-card .form-field input {
+  background: #110e0f !important;
+  color: #fff !important;
+  border-color: #635055 !important;
+}
+html.dark .auth-card .form-field input:-webkit-autofill,
+html.dark .auth-card .form-field input:-webkit-autofill:hover,
+html.dark .auth-card .form-field input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #fff !important;
+  -webkit-box-shadow: 0 0 0 1000px #110e0f inset !important;
+  caret-color: #fff !important;
+}
+
+/* =========================================================
+   AUTENTICAÇÃO — DARK MODE / PRIMARY FINAL
+   Em admin.css, --color-accent é um alias de texto e no dark mode
+   fica mais claro. Na autenticação usamos explicitamente o vermelho
+   primary da marca para manter o mesmo CTA do frontend.
+   ========================================================= */
+html.dark .auth-shell {
+  --auth-primary: #7a0510;
+  --auth-primary-hover: #9d0a18;
+  --auth-primary-active: #5d030c;
+  --auth-primary-soft: rgb(122 5 16 / .18);
+  --auth-primary-ring: rgb(122 5 16 / .32);
+}
+
+html.dark .auth-shell .auth-card .btn--primary {
+  background: var(--auth-primary) !important;
+  border-color: var(--auth-primary) !important;
+  color: #fff !important;
+  box-shadow: 0 10px 28px rgb(122 5 16 / .30) !important;
+}
+
+html.dark .auth-shell .auth-card .btn--primary:hover:not(:disabled) {
+  background: var(--auth-primary-hover) !important;
+  border-color: var(--auth-primary-hover) !important;
+  color: #fff !important;
+  box-shadow: 0 12px 32px rgb(122 5 16 / .36) !important;
+}
+
+html.dark .auth-shell .auth-card .btn--primary:active:not(:disabled) {
+  background: var(--auth-primary-active) !important;
+  border-color: var(--auth-primary-active) !important;
+}
+
+html.dark .auth-shell .auth-card .btn--primary:focus-visible {
+  outline: 2px solid #c9797f !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 5px var(--auth-primary-ring), 0 10px 28px rgb(122 5 16 / .28) !important;
+}
+
+html.dark .auth-shell .auth-card .eyebrow,
+html.dark .auth-shell .auth-recovery-link {
+  color: var(--auth-primary-hover) !important;
+}
+
+html.dark .auth-shell .auth-recovery-link:hover,
+html.dark .auth-shell .auth-recovery-link:focus-visible {
+  color: #c21b2a !important;
+  text-decoration-color: currentColor !important;
+}
+
+html.dark .auth-shell .auth-card .form-field input:hover,
+html.dark .auth-shell .auth-card .form-field select:hover,
+html.dark .auth-shell .auth-card .form-field textarea:hover {
+  border-color: #9d0a18 !important;
+}
+
+html.dark .auth-shell .auth-card .form-field input:focus,
+html.dark .auth-shell .auth-card .form-field input:focus-visible,
+html.dark .auth-shell .auth-card .form-field select:focus,
+html.dark .auth-shell .auth-card .form-field select:focus-visible,
+html.dark .auth-shell .auth-card .form-field textarea:focus,
+html.dark .auth-shell .auth-card .form-field textarea:focus-visible {
+  border-color: var(--auth-primary) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 3px var(--auth-primary-ring) !important;
+}
+
+html.dark .auth-shell .auth-theme-toggle .theme-toggle:hover,
+html.dark .auth-shell .auth-theme-toggle .theme-toggle:focus-visible {
+  border-color: var(--auth-primary) !important;
+  color: #fff !important;
+  background: var(--auth-primary) !important;
+  box-shadow: 0 0 0 3px var(--auth-primary-ring) !important;
+}
