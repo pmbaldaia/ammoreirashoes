@@ -5,6 +5,7 @@ type SelectOption = string | number | boolean | { value: string | number | boole
 interface Field {
   key: string
   label: string
+  tableLabel?: string
   type?: 'text'|'date'|'time'|'datetime-local'|'textarea'|'number'|'select'|'array'|'image'|'image-multi'|'email'|'password'
   options?: SelectOption[]
   placeholder?: string
@@ -37,7 +38,7 @@ const props=withDefaults(defineProps<{
   panelNote?: string
   emptyText?: string
   defaultFilters?: Record<string, any>
-}>(), { publishKey: 'status', showSearch: true, allowCreate: true, allowEdit: true, allowDelete: true, showPublishAction: true, editActionLabel: 'Editar', panelNote: 'As alterações guardadas aqui são refletidas no site público.', emptyText: 'Adiciona o primeiro registo para começar.', defaultFilters: () => ({}) })
+}>(), { publishKey: 'status', showSearch: true, allowCreate: true, allowEdit: true, allowDelete: true, showPublishAction: true, editActionLabel: 'Editar', panelNote: 'As alterações guardadas ficam disponíveis automaticamente onde este conteúdo é utilizado.', emptyText: 'Ainda não existe conteúdo. Adiciona o primeiro item para começar.', defaultFilters: () => ({}) })
 
 const route=useRoute()
 const router=useRouter()
@@ -78,9 +79,9 @@ const normalizedOption=(option:SelectOption)=> typeof option==='object' && optio
   : { value: option, label: String(option) }
 const optionLabel=(field:Field,value:any)=>{
   const match=(field.options||[]).map(normalizedOption).find(o=>String(o.value)===String(value))
-  return match?.label ?? value
+  return match?.label ?? cmsValueLabel(value)
 }
-const fieldLabel=(key:string)=>props.fields.find(f=>f.key===key)?.label||key
+const fieldLabel=(key:string)=>props.fields.find(f=>f.key===key)?.tableLabel||props.fields.find(f=>f.key===key)?.label||cmsKeyLabel(key)
 const toLocalDateTimeInput=(value:any)=>{
   if(!value) return ''
   const date=new Date(value)
@@ -100,11 +101,16 @@ const display=(item:any,key:string)=>{
   if(field?.type==='image-multi' && Array.isArray(v)) return `${v.length} ${v.length===1?'imagem':'imagens'}`
   if(Array.isArray(v)) return v.join(' · ')
   if(field?.type==='select') return optionLabel(field,v)
+  // Slugs/valores técnicos de página mantêm-se na API/MongoDB, mas no CMS
+  // são apresentados com nomes legíveis sempre que exista um label conhecido.
+  if(key==='pageSlug') return cmsValueLabel(v)
   if(field?.type==='datetime-local') return formatDateTime(v)
   if(typeof v==='boolean') return v?'Sim':'Não'
   return v??'—'
 }
 
+const isStatusColumn=(key:string)=>key==='status' || key==='state'
+const statusTone=(value:any)=>cmsStatusTone(value)
 const isImageColumn=(key:string)=>props.fields.find(f=>f.key===key)?.type==='image'
 const imagePreviewFor=(field:Field)=>localImagePreviews.value[field.key]||editing.value?.[field.key]||''
 const revokeLocalPreviews=()=>{
@@ -140,7 +146,7 @@ async function load({ silent=false }:{ silent?:boolean }={}){
   if(!silent){ pending.value=true; error.value='' }
   try{ items.value=await props.service.list() }
   catch(e:any){
-    const message=e?.data?.message||e?.message||'Erro ao carregar os dados.'
+    const message=e?.data?.message||e?.message||'Não foi possível carregar a informação.'
     if(!silent){ error.value=message; toast.error('Não foi possível carregar', message) }
   }
   finally{ if(!silent) pending.value=false }
@@ -185,8 +191,8 @@ function close(){
 function validate(payload:any){
   for(const f of props.fields){
     if(f.required===false) continue
-    if(['text','email','password','date','time','datetime-local','select'].includes(f.type||'text') && !String(payload[f.key]??'').trim()) return `${f.label} é obrigatório.`
-    if(['array','image-multi'].includes(f.type||'') && (!Array.isArray(payload[f.key]) || !payload[f.key].filter(Boolean).length)) return `${f.label} é obrigatório.`
+    if(['text','email','password','date','time','datetime-local','select'].includes(f.type||'text') && !String(payload[f.key]??'').trim()) return `Preenche o campo “${f.label}”.`
+    if(['array','image-multi'].includes(f.type||'') && (!Array.isArray(payload[f.key]) || !payload[f.key].filter(Boolean).length)) return `Preenche o campo “${f.label}”.`
   }
   return ''
 }
@@ -211,8 +217,8 @@ async function submit(){
     const wasEditing=editingId.value!==null
     close()
     toast.success(
-      wasEditing ? 'Alterações guardadas' : 'Registo adicionado',
-      wasEditing ? 'O registo foi atualizado com sucesso.' : 'O novo registo foi criado com sucesso.'
+      wasEditing ? 'Alterações guardadas' : 'Conteúdo adicionado',
+      wasEditing ? 'As alterações foram guardadas com sucesso.' : 'O novo conteúdo foi criado com sucesso.'
     )
   }catch(e:any){
     const message=e?.data?.message||e?.message||'Não foi possível guardar as alterações.'
@@ -224,10 +230,10 @@ async function del(item:any){
   if(!canDelete.value) return
   const label = display(item, visibleColumns.value[0])
   const accepted = await confirmDialog.ask({
-    title: 'Eliminar registo?',
+    title: 'Eliminar este conteúdo?',
     message: label && label !== '—'
       ? `Vais eliminar “${label}”. Esta ação não pode ser anulada.`
-      : 'Este registo será eliminado de forma permanente. Esta ação não pode ser anulada.',
+      : 'Este conteúdo será eliminado de forma permanente. Esta ação não pode ser anulada.',
     confirmLabel: 'Sim, eliminar',
     cancelLabel: 'Cancelar',
     tone: 'danger',
@@ -237,10 +243,10 @@ async function del(item:any){
   try{
     await props.service.remove(item.id)
     await load()
-    toast.success('Registo eliminado', 'O registo foi removido com sucesso.')
+    toast.success('Conteúdo eliminado', 'O conteúdo foi removido com sucesso.')
   }
   catch(e:any){
-    const message=e?.data?.message||e?.message||'Não foi possível eliminar o registo.'
+    const message=e?.data?.message||e?.message||'Não foi possível eliminar este conteúdo.'
     error.value=message
     toast.error('Erro ao eliminar', message)
   }
@@ -278,13 +284,13 @@ async function uploadImage(field:Field,event:Event){
     const media=mediaService()
     const result=await media.upload(file)
     editing.value[field.key]=result.url
-    toast.success('Imagem carregada', 'Confirma a pré-visualização e guarda o registo para aplicar a alteração.')
+    toast.success('Imagem carregada', 'Confirma a pré-visualização e guarda as alterações para a aplicar.')
   }catch(e:any){
     const preview=localImagePreviews.value[field.key]
     if(preview?.startsWith('blob:')) URL.revokeObjectURL(preview)
     delete localImagePreviews.value[field.key]
     error.value=e?.data?.message||e?.message||'Não foi possível carregar a imagem.'
-    toast.error('Erro no upload', error.value)
+    toast.error('Erro ao carregar a imagem', error.value)
   }finally{
     uploadBusy.value[field.key]=false
     input.value=''
@@ -322,37 +328,38 @@ onBeforeUnmount(()=>{
 <template>
   <div class="page-stack">
     <header class="page-heading">
-      <div><p class="eyebrow">AM Moreira · Gestão</p><h1>{{title}}</h1><p class="page-heading__description">{{description}}</p></div>
-      <div v-if="canCreate" class="page-heading__actions"><button class="btn btn--primary" @click="create"><Icon name="lucide:plus"/> Adicionar</button></div>
+      <div><p class="eyebrow">Área de gestão</p><h1>{{title}}</h1><p class="page-heading__description">{{description}}</p></div>
+      <div v-if="canCreate" class="page-heading__actions"><button class="btn btn--primary" @click="create"><Icon name="lucide:plus"/> Adicionar novo</button></div>
     </header>
 
     <p v-if="error" class="cms-alert cms-alert--danger">{{error}}</p>
 
     <section class="panel content-panel">
       <div class="panel__header content-panel__header">
-        <div><h2>{{filteredItems.length}} de {{items.length}} registos</h2><p>{{ panelNote }}</p></div>
+        <div><h2>{{filteredItems.length}} de {{items.length}} itens</h2><p>{{ panelNote }}</p></div>
         <div class="resource-tools">
           <label v-if="showSearch" class="resource-search"><Icon name="lucide:search"/><input v-model="query" type="search" placeholder="Pesquisar…"></label>
           <label v-for="field in filterFields" :key="field.key" class="resource-filter-wrap">
             <span>{{ field.label }}</span>
             <select v-model="filters[field.key]" class="resource-filter" :aria-label="`Filtrar por ${field.label}`">
-              <option value="">Todos</option>
+              <option value="">Todos os estados</option>
               <option v-for="option in field.options" :key="String(normalizedOption(option).value)" :value="normalizedOption(option).value">{{normalizedOption(option).label}}</option>
             </select>
           </label>
-          <button v-if="query || Object.values(filters).some(Boolean)" class="btn btn--ghost" @click="clearFilters"><Icon name="lucide:x"/> Limpar</button>
-          <button class="btn btn--secondary" @click="load" :disabled="pending"><Icon name="lucide:refresh-cw"/> Atualizar</button>
+          <button v-if="query || Object.values(filters).some(Boolean)" class="btn btn--ghost" @click="clearFilters"><Icon name="lucide:x"/> Limpar filtros</button>
+          <button class="btn btn--secondary" @click="load" :disabled="pending"><Icon name="lucide:refresh-cw"/> Atualizar lista</button>
         </div>
       </div>
 
       <div v-if="pending" class="cms-loading">A carregar…</div>
-      <div v-else-if="!filteredItems.length" class="empty-state"><Icon name="lucide:inbox" size="30"/><h3>{{query||Object.values(filters).some(Boolean)?'Sem resultados':'Ainda não existem registos'}}</h3><p>{{query||Object.values(filters).some(Boolean)?'Altera a pesquisa ou os filtros.':emptyText}}</p><button v-if="canCreate&&!query&&!Object.values(filters).some(Boolean)" class="btn btn--primary" @click="create">Adicionar registo</button></div>
+      <div v-else-if="!filteredItems.length" class="empty-state"><Icon name="lucide:inbox" size="30"/><h3>{{query||Object.values(filters).some(Boolean)?'Sem resultados':'Ainda não existe conteúdo'}}</h3><p>{{query||Object.values(filters).some(Boolean)?'Altera a pesquisa ou os filtros.':emptyText}}</p><button v-if="canCreate&&!query&&!Object.values(filters).some(Boolean)" class="btn btn--primary" @click="create">Adicionar conteúdo</button></div>
       <div v-else class="table-scroll">
         <table class="data-table resource-data-table"><thead><tr><th v-for="c in visibleColumns" :key="c">{{fieldLabel(c)}}</th><th>Ações</th></tr></thead>
           <tbody><tr v-for="item in paginatedItems" :key="item.id">
             <td v-for="c in visibleColumns" :key="c" :data-label="fieldLabel(c)">
               <img v-if="isImageColumn(c) && item[c]" :src="item[c]" :alt="`Imagem de ${display(item,visibleColumns[0])}`" class="table-image-preview" loading="lazy">
               <strong v-else-if="c===visibleColumns[0]">{{display(item,c)}}</strong>
+              <CmsBadge v-else-if="isStatusColumn(c)" :label="String(display(item,c))" :tone="statusTone(item[c])" />
               <template v-else>{{display(item,c)}}</template>
             </td>
             <td data-label="Ações"><div class="row-actions">
@@ -373,13 +380,13 @@ onBeforeUnmount(()=>{
 
     <div v-if="modalOpen" class="modal-backdrop" @click.self="close">
       <form v-if="editing" class="cms-modal" @submit.prevent="submit">
-        <header><div><p class="eyebrow">{{editingId!==null?'Editar registo':'Novo registo'}}</p><h2>{{title}}</h2></div><button type="button" class="icon-button" @click="close"><Icon name="lucide:x"/></button></header>
+        <header><div><p class="eyebrow">{{editingId!==null?'Editar conteúdo':'Adicionar conteúdo'}}</p><h2>{{title}}</h2></div><button type="button" class="icon-button" @click="close"><Icon name="lucide:x"/></button></header>
         <div class="form-grid">
           <label v-for="field in fields" :key="field.key" class="form-field" :class="{'form-field--wide':['textarea','array','image','image-multi'].includes(field.type||'')}">
             <span>{{field.label}}</span>
             <textarea v-if="field.type==='textarea'" v-model="editing[field.key]" rows="5" :placeholder="field.placeholder" :readonly="field.readonly"/>
             <textarea v-else-if="field.type==='array'" :value="Array.isArray(editing[field.key])?editing[field.key].join('\n'):editing[field.key]" rows="5" placeholder="Um item por linha" @input="arrayInput(field.key,$event)"/>
-            <select v-else-if="field.type==='select'" v-model="editing[field.key]" :disabled="field.readonly"><option value="">Selecionar…</option><option v-for="option in field.options" :key="String(normalizedOption(option).value)" :value="normalizedOption(option).value">{{normalizedOption(option).label}}</option></select>
+            <select v-else-if="field.type==='select'" v-model="editing[field.key]" :disabled="field.readonly"><option value="">Seleciona uma opção</option><option v-for="option in field.options" :key="String(normalizedOption(option).value)" :value="normalizedOption(option).value">{{normalizedOption(option).label}}</option></select>
             <CmsDateTimePicker
               v-else-if="['date','time','datetime-local'].includes(field.type||'')"
               v-model="editing[field.key]"
@@ -405,7 +412,7 @@ onBeforeUnmount(()=>{
                   <Icon name="lucide:image" size="28"/>
                   <span>Ainda não existe imagem.</span>
                 </div>
-                <input v-model="editing[field.key]" type="text" :placeholder="field.placeholder||'URL ou caminho da imagem'">
+                <input v-model="editing[field.key]" type="text" :placeholder="field.placeholder||'Endereço da imagem ou caminho do ficheiro'">
                 <label class="image-upload-button" :class="{'is-loading':uploadBusy[field.key]}">
                   <Icon :name="uploadBusy[field.key]?'lucide:loader-circle':'lucide:upload'" />
                   {{ uploadBusy[field.key] ? 'A carregar…' : imagePreviewFor(field) ? 'Substituir imagem' : 'Carregar imagem' }}
@@ -414,14 +421,14 @@ onBeforeUnmount(()=>{
                 <button v-if="imagePreviewFor(field)" type="button" class="btn btn--ghost image-remove-button" :disabled="uploadBusy[field.key]" @click="clearImage(field)">
                   <Icon name="lucide:x"/> Remover imagem
                 </button>
-                <small class="form-field__hint">A pré-visualização é atualizada assim que selecionas o ficheiro. O URL final é guardado no MongoDB depois de guardares o registo.</small>
+                <small class="form-field__hint">A pré-visualização é atualizada assim que selecionas o ficheiro. O endereço final da imagem é guardado depois de guardares as alterações.</small>
               </div>
             </template>
             <input v-else v-model="editing[field.key]" :type="field.type||'text'" :placeholder="field.placeholder" :required="field.required!==false" :readonly="field.readonly"/>
             <small v-if="field.hint" class="form-field__hint">{{field.hint}}</small>
           </label>
         </div>
-        <footer><button type="button" class="btn btn--secondary" @click="close">Cancelar</button><button class="btn btn--primary" :disabled="saving">{{saving?'A guardar…':editingId!==null?'Guardar alterações':'Adicionar registo'}}</button></footer>
+        <footer><button type="button" class="btn btn--secondary" @click="close">Cancelar</button><button class="btn btn--primary" :disabled="saving">{{saving?'A guardar…':editingId!==null?'Guardar alterações':'Adicionar conteúdo'}}</button></footer>
       </form>
     </div>
   </div>

@@ -476,3 +476,50 @@ html.dark .data-table thead th {
     max-height: calc(100dvh - 20px);
   }
 }
+
+/* Estados semânticos — cores independentes da cor da marca. */
+.status-badge--success {
+  background: #dcfce7 !important;
+  color: #166534 !important;
+  border: 1px solid #86efac !important;
+}
+.status-badge--success .status-badge__dot { background: #16a34a !important; }
+.status-badge--warning {
+  background: #fef3c7 !important;
+  color: #92400e !important;
+  border: 1px solid #fcd34d !important;
+}
+.status-badge--warning .status-badge__dot { background: #d97706 !important; }
+.status-badge--danger {
+  background: #fee2e2 !important;
+  color: #991b1b !important;
+  border: 1px solid #fca5a5 !important;
+}
+.status-badge--danger .status-badge__dot { background: #dc2626 !important; }
+.status-badge--info {
+  background: #f1f5f9 !important;
+  color: #475569 !important;
+  border: 1px solid #cbd5e1 !important;
+}
+.status-badge--info .status-badge__dot { background: #64748b !important; }
+
+html.dark .status-badge--success {
+  background: rgb(22 101 52 / .28) !important;
+  color: #86efac !important;
+  border-color: #166534 !important;
+}
+html.dark .status-badge--warning {
+  background: rgb(146 64 14 / .28) !important;
+  color: #fcd34d !important;
+  border-color: #92400e !important;
+}
+html.dark .status-badge--danger {
+  background: rgb(153 27 27 / .28) !important;
+  color: #fca5a5 !important;
+  border-color: #991b1b !important;
+}
+html.dark .status-badge--info {
+  background: rgb(71 85 105 / .28) !important;
+  color: #cbd5e1 !important;
+  border-color: #475569 !important;
+}

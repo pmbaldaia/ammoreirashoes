@@ -3559,3 +3559,50 @@ html.dark .auth-logo {
     padding: 26px 20px;
   }
 }
+
+/* Mobile CRUD actions — full-width horizontal action bar */
+@media (max-width: 760px) {
+  .cms-shell .resource-data-table td:last-child {
+    padding: 12px !important;
+  }
+
+  .cms-shell .resource-data-table .row-actions {
+    display: flex !important;
+    width: 100% !important;
+    max-width: none !important;
+    gap: 8px !important;
+    justify-content: stretch !important;
+    align-items: stretch !important;
+  }
+
+  .cms-shell .resource-data-table .row-actions .icon-button {
+    display: inline-flex !important;
+    flex: 1 1 0 !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: 46px !important;
+    min-height: 46px !important;
+    padding: 0 8px !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 6px !important;
+    border-radius: 10px !important;
+  }
+
+  .cms-shell .resource-data-table .row-actions .icon-button svg {
+    flex: 0 0 auto !important;
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  .cms-shell .resource-data-table .row-actions__label {
+    display: block !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+  }
+}

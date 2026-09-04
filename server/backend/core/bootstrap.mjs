@@ -23,7 +23,65 @@ export async function ensureAmMoreiraDatabase(db) {
   // needs the full bootstrap.
   const usersCollection = db.collection('users')
   const existingUser = await usersCollection.findOne({}, { projection: { _id: 1 } })
-  if (existingUser) return
+  if (existingUser) {
+    // One-time navigation migration for installations created before Contactos
+    // became a normal CMS menu item. The marker prevents a deleted/hidden
+    // Contactos item from being recreated later, so the CMS remains authoritative.
+    const settingsCollection = db.collection('settings')
+    const company = await settingsCollection.findOne(
+      { id: 'company' },
+      { projection: { navigationMenuV2Migrated: 1, homepageEventsCtaV1Migrated: 1 } },
+    )
+    if (!company?.navigationMenuV2Migrated) {
+      const menusCollection = db.collection('menus')
+      const existingContactMenu = await menusCollection.findOne({ url: '/contacto', location: 'header' })
+      if (!existingContactMenu) {
+        const now = new Date().toISOString()
+        await menusCollection.updateOne(
+          { id: 'menu-contact' },
+          {
+            $setOnInsert: {
+              id: 'menu-contact',
+              label: 'Contactos',
+              url: '/contacto',
+              location: 'header',
+              order: 8,
+              status: 'active',
+              createdAt: now,
+              updatedAt: now,
+            },
+          },
+          { upsert: true },
+        )
+      }
+      await settingsCollection.updateOne(
+        { id: 'company' },
+        { $set: { navigationMenuV2Migrated: true } },
+      )
+    }
+    if (!company?.homepageEventsCtaV1Migrated) {
+      // One-time homepage CTA migration. Existing installations used to point
+      // this CMS block at Coleções. Move it to Feiras & Eventos in MongoDB;
+      // after this migration the block remains fully editable in the CMS.
+      await db.collection('contentBlocks').updateOne(
+        { id: 'home-collections', pageSlug: 'home' },
+        {
+          $set: {
+            eyebrow: 'Feiras & Eventos',
+            title: 'Veja onde nos pode encontrar.',
+            content: 'Acompanhe as próximas feiras e eventos da AM Moreira e descubra onde poderá encontrar-nos presencialmente.',
+            items: ['Ver feiras e eventos|/eventos'],
+            updatedAt: new Date().toISOString(),
+          },
+        },
+      )
+      await settingsCollection.updateOne(
+        { id: 'company' },
+        { $set: { homepageEventsCtaV1Migrated: true } },
+      )
+    }
+    return
+  }
 
   for (const [name, rows] of Object.entries(seedData)) {
     const collection = db.collection(name)

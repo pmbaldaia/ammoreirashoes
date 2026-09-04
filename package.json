@@ -11,7 +11,8 @@
     "postinstall": "nuxt prepare",
     "mongo:setup": "node --env-file=.env scripts/setup-am-moreira-mongodb.mjs",
     "mongo:sync": "node --env-file=.env scripts/sync-am-moreira-mongodb.mjs",
-    "a11y:tokens": "node scripts/check-accessibility-tokens.mjs"
+    "a11y:tokens": "node scripts/check-accessibility-tokens.mjs",
+    "sync:mongodb": "node --env-file=.env scripts/sync-am-moreira-mongodb.mjs"
   },
   "devDependencies": {
     "@nuxt/image": "^1.11.0",

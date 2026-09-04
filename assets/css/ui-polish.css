@@ -1004,3 +1004,124 @@ html.dark .cms-sidebar .brand__logo {
     max-width: none !important;
   }
 }
+
+/* =========================================================
+   MOBILE V2 — barra de ações compacta, horizontal e mobile-first
+   ========================================================= */
+@media (max-width: 760px) {
+  .resource-data-table td[data-label="Ações"],
+  .resource-data-table td:last-child {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    box-sizing: border-box !important;
+    padding: 10px 12px 12px !important;
+    background: transparent !important;
+  }
+
+  .resource-data-table td[data-label="Ações"]::before,
+  .resource-data-table td:last-child::before {
+    display: none !important;
+    content: none !important;
+  }
+
+  .resource-data-table td[data-label="Ações"] .row-actions,
+  .resource-data-table td:last-child .row-actions {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    gap: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+    border: 1px solid var(--color-border) !important;
+    border-radius: 12px !important;
+    background: var(--color-surface, #fff) !important;
+    box-shadow: none !important;
+  }
+
+  .resource-data-table td[data-label="Ações"] .row-actions > .icon-button,
+  .resource-data-table td:last-child .row-actions > .icon-button {
+    flex: 1 1 0 !important;
+    width: 0 !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: 48px !important;
+    min-height: 48px !important;
+    margin: 0 !important;
+    padding: 0 8px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+    border-right: 1px solid var(--color-border) !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .resource-data-table td[data-label="Ações"] .row-actions > .icon-button:last-child,
+  .resource-data-table td:last-child .row-actions > .icon-button:last-child {
+    border-right: 0 !important;
+  }
+
+  .resource-data-table td[data-label="Ações"] .row-actions > .icon-button:hover,
+  .resource-data-table td:last-child .row-actions > .icon-button:hover,
+  .resource-data-table td[data-label="Ações"] .row-actions > .icon-button:focus-visible,
+  .resource-data-table td:last-child .row-actions > .icon-button:focus-visible {
+    background: var(--color-surface-soft, rgba(0,0,0,.035)) !important;
+    transform: none !important;
+  }
+
+  .resource-data-table td[data-label="Ações"] .row-actions > .icon-button.danger,
+  .resource-data-table td:last-child .row-actions > .icon-button.danger {
+    color: var(--color-danger) !important;
+    background: transparent !important;
+  }
+
+  .resource-data-table td[data-label="Ações"] .row-actions > .icon-button.danger:hover,
+  .resource-data-table td:last-child .row-actions > .icon-button.danger:hover {
+    background: var(--color-danger-tint) !important;
+  }
+
+  .resource-data-table td[data-label="Ações"] .row-actions .icon-button svg,
+  .resource-data-table td:last-child .row-actions .icon-button svg {
+    flex: 0 0 auto !important;
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  .resource-data-table td[data-label="Ações"] .row-actions__label,
+  .resource-data-table td:last-child .row-actions__label,
+  .resource-data-table .row-actions__label {
+    display: inline-block !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .resource-data-table td[data-label="Ações"] .row-actions > .icon-button,
+  .resource-data-table td:last-child .row-actions > .icon-button {
+    padding-inline: 5px !important;
+    gap: 4px !important;
+  }
+
+  .resource-data-table td[data-label="Ações"] .row-actions__label,
+  .resource-data-table td:last-child .row-actions__label,
+  .resource-data-table .row-actions__label {
+    font-size: 11px !important;
+  }
+}

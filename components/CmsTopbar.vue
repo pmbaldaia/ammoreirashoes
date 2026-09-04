@@ -22,7 +22,7 @@ onBeforeUnmount(() => contactsTimer && clearInterval(contactsTimer))
 watch(() => route.fullPath, refreshNewContacts)
 
 const roleLabel = computed(() =>
-  ({ admin: 'Administrador', viewer: 'Viewer', commercial: 'Comercial' } as Record<string,string>)[user.value?.role || ''] || 'Utilizador'
+  ({ admin: 'Administrador', viewer: 'Consulta e edição', commercial: 'Comercial' } as Record<string,string>)[user.value?.role || ''] || 'Utilizador'
 )
 
 const pageMeta = computed(() => {
@@ -35,14 +35,14 @@ const pageMeta = computed(() => {
     { test: (p:string) => p.startsWith('/admin/produtos'), label: 'Produtos', icon: 'lucide:package' },
     { test: (p:string) => p.startsWith('/admin/categorias'), label: 'Categorias', icon: 'lucide:tags' },
     { test: (p:string) => p.startsWith('/admin/colecoes'), label: 'Coleções', icon: 'lucide:book-open' },
-    { test: (p:string) => p.startsWith('/admin/eventos'), label: 'Feiras & Eventos', icon: 'lucide:calendar-days' },
+    { test: (p:string) => p.startsWith('/admin/eventos'), label: 'Feiras e eventos', icon: 'lucide:calendar-days' },
     { test: (p:string) => p.startsWith('/admin/galeria'), label: 'Galeria', icon: 'lucide:images' },
     { test: (p:string) => p.startsWith('/admin/contactos'), label: 'Contactos', icon: 'lucide:messages-square' },
     { test: (p:string) => p.startsWith('/admin/menus'), label: 'Menus', icon: 'lucide:menu' },
-    { test: (p:string) => p.startsWith('/admin/logs'), label: 'Auditoria', icon: 'lucide:scroll-text' },
+    { test: (p:string) => p.startsWith('/admin/logs'), label: 'Histórico de alterações', icon: 'lucide:scroll-text' },
     { test: (p:string) => p.startsWith('/admin/media'), label: 'Multimédia', icon: 'lucide:image' },
     { test: (p:string) => p.startsWith('/admin/utilizadores'), label: 'Utilizadores', icon: 'lucide:key-round' },
-    { test: (p:string) => p.startsWith('/admin/definicoes'), label: 'Definições', icon: 'lucide:settings-2' },
+    { test: (p:string) => p.startsWith('/admin/definicoes'), label: 'Informação da empresa', icon: 'lucide:settings-2' },
     { test: (p:string) => p.startsWith('/admin/pesquisa'), label: 'Resultados', icon: 'lucide:list-filter' },
   ]
 

@@ -25,7 +25,7 @@ const allGroups: CmsNavGroup[] = [
     { label: 'Coleções', icon: 'lucide:book-open', to: '/admin/colecoes' },
   ]},
   { label: 'Comunicação', items: [
-    { label: 'Feiras & Eventos', icon: 'lucide:calendar-days', to: '/admin/eventos' },
+    { label: 'Feiras e eventos', icon: 'lucide:calendar-days', to: '/admin/eventos' },
     { label: 'Galeria', icon: 'lucide:images', to: '/admin/galeria' },
     { label: 'Contactos', icon: 'lucide:messages-square', to: '/admin/contactos' },
   ]},
@@ -34,8 +34,8 @@ const allGroups: CmsNavGroup[] = [
   ]},
   { label: 'Sistema', items: [
     { label: 'Utilizadores', icon: 'lucide:key-round', to: '/admin/utilizadores', adminOnly: true },
-    { label: 'Empresa e SEO', icon: 'lucide:settings-2', to: '/admin/definicoes' },
-    { label: 'Auditoria', icon: 'lucide:scroll-text', to: '/admin/logs', adminOnly: true },
+    { label: 'Informação da empresa', icon: 'lucide:settings-2', to: '/admin/definicoes' },
+    { label: 'Histórico de alterações', icon: 'lucide:scroll-text', to: '/admin/logs', adminOnly: true },
   ]},
 ]
 

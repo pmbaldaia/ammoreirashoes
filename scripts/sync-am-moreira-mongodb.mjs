@@ -30,14 +30,23 @@ try {
       updateOne: {
         filter: { id: String(row.id) },
         update: { $set: { ...row, updatedAt: new Date().toISOString() }, $setOnInsert: { createdAt: new Date().toISOString() } },
-        // Never recreate content that was intentionally deleted in the CMS.
-        upsert: false,
+        // Feiras fornecidas para esta atualização têm de ser criadas quando
+        // ainda não existirem. Nas restantes collections mantemos a regra de
+        // não recriar conteúdo que tenha sido eliminado intencionalmente no CMS.
+        upsert: name === 'events',
       },
     })))
     const count = result.matchedCount + result.upsertedCount
     updated += count
     console.log(`${name}: ${count} registos sincronizados`)
   }
+  const expectedEventIds = (seedData.events || []).map((row) => String(row.id))
+  const persistedEvents = await db.collection('events').find({ id: { $in: expectedEventIds } }).toArray()
+  const persistedIds = new Set(persistedEvents.map((row) => String(row.id)))
+  const missingEventIds = expectedEventIds.filter((id) => !persistedIds.has(id))
+  if (missingEventIds.length) throw new Error(`Falha na validação MongoDB. Feiras em falta: ${missingEventIds.join(', ')}`)
+
+  console.log(`events: ${persistedEvents.length}/${expectedEventIds.length} feiras validadas diretamente no MongoDB`)
   console.log(`Sincronização concluída — ${updated} registos na base ${dbName}.`)
   console.log('Os restantes registos criados no CMS não foram eliminados.')
 } finally {
