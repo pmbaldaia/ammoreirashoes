@@ -728,3 +728,121 @@ html.dark .auth-shell .auth-theme-toggle .theme-toggle:focus-visible {
   background: var(--auth-primary) !important;
   box-shadow: 0 0 0 3px var(--auth-primary-ring) !important;
 }
+
+/* =========================================================
+   ADMIN — LIGHT MODE / PRIMARY DA MARCA
+   No modo claro o CMS deve usar o vermelho da AM Moreira como
+   cor principal de interação. O verde fica reservado a estados
+   semânticos (Publicado, Ativo, Sucesso, etc.).
+   ========================================================= */
+html:not(.dark) .cms-shell {
+  --ui-primary-bg: #7a0510;
+  --ui-primary-bg-hover: #9d0a18;
+  --ui-primary-bg-active: #5d030c;
+  --ui-primary-text: #7a0510;
+  --ui-primary-soft: #f9e9eb;
+  --ui-focus-soft: rgb(122 5 16 / .16);
+}
+
+html:not(.dark) .cms-shell .btn--primary {
+  background: var(--ui-primary-bg) !important;
+  border-color: var(--ui-primary-bg) !important;
+  color: #fff !important;
+  box-shadow: 0 8px 22px rgb(122 5 16 / .18) !important;
+}
+html:not(.dark) .cms-shell .btn--primary:hover:not(:disabled) {
+  background: var(--ui-primary-bg-hover) !important;
+  border-color: var(--ui-primary-bg-hover) !important;
+  color: #fff !important;
+}
+html:not(.dark) .cms-shell .btn--primary:active:not(:disabled) {
+  background: var(--ui-primary-bg-active) !important;
+  border-color: var(--ui-primary-bg-active) !important;
+}
+html:not(.dark) .cms-shell .btn--primary:focus-visible {
+  outline: 2px solid var(--ui-primary-bg) !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 5px rgb(122 5 16 / .16) !important;
+}
+
+html:not(.dark) .cms-shell .btn--secondary {
+  background: transparent !important;
+  border-color: var(--ui-primary-bg) !important;
+  color: var(--ui-primary-bg) !important;
+}
+html:not(.dark) .cms-shell .btn--secondary:hover:not(:disabled) {
+  background: var(--ui-primary-soft) !important;
+  border-color: var(--ui-primary-bg-hover) !important;
+  color: var(--ui-primary-bg-hover) !important;
+}
+
+html:not(.dark) .cms-shell .text-button,
+html:not(.dark) .cms-shell a.text-button {
+  color: var(--ui-primary-text) !important;
+}
+html:not(.dark) .cms-shell .text-button:hover,
+html:not(.dark) .cms-shell a.text-button:hover {
+  color: var(--ui-primary-bg-hover) !important;
+}
+
+html:not(.dark) .cms-shell .form-field input:hover,
+html:not(.dark) .cms-shell .form-field select:hover,
+html:not(.dark) .cms-shell .form-field textarea:hover,
+html:not(.dark) .cms-shell .filter-button:hover {
+  border-color: var(--ui-primary-bg) !important;
+}
+html:not(.dark) .cms-shell .form-field input:focus,
+html:not(.dark) .cms-shell .form-field input:focus-visible,
+html:not(.dark) .cms-shell .form-field select:focus,
+html:not(.dark) .cms-shell .form-field select:focus-visible,
+html:not(.dark) .cms-shell .form-field textarea:focus,
+html:not(.dark) .cms-shell .form-field textarea:focus-visible,
+html:not(.dark) .cms-shell .topbar-search:focus-within {
+  border-color: var(--ui-primary-bg) !important;
+  outline: 0 !important;
+  box-shadow: 0 0 0 3px var(--ui-focus-soft) !important;
+}
+
+html:not(.dark) .cms-shell input[type="checkbox"],
+html:not(.dark) .cms-shell input[type="radio"] {
+  accent-color: var(--ui-primary-bg) !important;
+}
+
+html:not(.dark) .cms-shell .icon-button:hover,
+html:not(.dark) .cms-shell .filter-button:hover,
+html:not(.dark) .cms-shell .quick-action:hover {
+  background: var(--ui-primary-soft) !important;
+  color: var(--ui-primary-text) !important;
+}
+html:not(.dark) .cms-shell .quick-action:hover > span {
+  background: #fff !important;
+  color: var(--ui-primary-text) !important;
+}
+
+html:not(.dark) .cms-shell .nav-item--active {
+  background: var(--ui-primary-bg) !important;
+  color: #fff !important;
+}
+html:not(.dark) .cms-shell .nav-item--active:hover {
+  background: var(--ui-primary-bg-hover) !important;
+  color: #fff !important;
+}
+html:not(.dark) .cms-shell .nav-item:not(.nav-item--active):hover {
+  background: var(--ui-primary-soft) !important;
+  color: var(--ui-primary-text) !important;
+}
+
+html:not(.dark) .cms-shell .cms-pagination button[aria-current="page"] {
+  background: var(--ui-primary-bg) !important;
+  border-color: var(--ui-primary-bg) !important;
+  color: #fff !important;
+}
+html:not(.dark) .cms-shell .cms-pagination button:not([aria-current="page"]):hover {
+  border-color: var(--ui-primary-bg) !important;
+  color: var(--ui-primary-text) !important;
+  background: var(--ui-primary-soft) !important;
+}
+
+html:not(.dark) .cms-shell :where(a, button, input, select, textarea):focus-visible {
+  outline-color: var(--ui-primary-bg);
+}
